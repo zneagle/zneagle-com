@@ -1,0 +1,9 @@
+{
+  "_note": "Owner-controlled values consumed by scripts/sync_shell.py. Leave a value null until it is approved for public use.",
+  "contact": {
+    "email": null,
+    "linkedin": null
+  },
+  "feedback_subject": "ZNEAGLE.COM /r feedback",
+  "build_label": "RoboBoston build"
+}

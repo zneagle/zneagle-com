@@ -1,0 +1,273 @@
+{
+  "_note": "Structured source registry consumed by scripts/sync_shell.py. Every [[src:id]] token in a page's source resolves against an id here. Each entry was opened and read (via WebFetch) on 2026-09-18, not cited from a search snippet. Do not add an entry without independently verifying it resolves and actually supports the claim it will be attached to.",
+  "nist-abac": {
+    "label": "NIST",
+    "title": "Guide to Attribute Based Access Control (ABAC) Definition and Considerations",
+    "author_or_org": "V. Hu et al., NIST",
+    "year": "2014, upd2 2019-08-02 (current active edition)",
+    "url": "https://csrc.nist.gov/pubs/sp/800/162/upd2/final",
+    "source_type": "NIST SPECIAL PUBLICATION",
+    "claim_scope": "PAC overlaps with attribute-based access control (ABAC).",
+    "why_it_matters": "The canonical NIST definition of ABAC — authorization decided by evaluating subject/object/action/environment attributes against policy — is the closest mainstream analog to what PAC evaluates.",
+    "verification_status": "verified 2026-09-18: fetched upd1 (found withdrawn); re-verified 2026-09-18 (007R1) against the current upd2/final edition, title/authors/definition/status confirmed"
+  },
+  "nist-zero-trust": {
+    "label": "NIST",
+    "title": "Zero Trust Architecture",
+    "author_or_org": "S. Rose, O. Borchert, S. Mitchell, S. Connelly, NIST",
+    "year": "2020",
+    "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+    "source_type": "NIST SPECIAL PUBLICATION",
+    "claim_scope": "Zero Trust's per-resource, per-session authorization model, as an alternative to perimeter trust.",
+    "why_it_matters": "Zero Trust treats authentication and authorization as discrete decisions made per session against a specific resource, rather than granted by network location — an established authorization-architecture alternative to perimeter trust. It is not evidence about capability-based security, and the document does not describe a per-action authorization model; the comparison is limited to that authorization framing.",
+    "verification_status": "verified 2026-09-18: fetched, title/authors/year confirmed; wording narrowed 2026-09-18 (007R1) after audit found the original card implied capability-system and per-action-authorization support the source does not state"
+  },
+  "ros2-access-control": {
+    "label": "ROS 2",
+    "title": "ROS 2 Access Control Policies",
+    "author_or_org": "R. White and K. Fazzari, ROS 2 Design",
+    "year": "written 2019-08, last modified 2021-06",
+    "url": "https://design.ros2.org/articles/ros2_access_control_policies.html",
+    "source_type": "ROS 2 DESIGN DOCUMENT",
+    "claim_scope": "Robotics middleware (SROS 2) authorization/access-control policy — not fleet management or orchestration.",
+    "why_it_matters": "An official ROS 2 design document specifying deny-by-default, least-privilege authorization over topics/services/actions in SROS 2 — real prior art for robotics-middleware authorization. The document itself notes privilege separation between ROS 2 and DDS remains weak; this card does not claim the mechanism is complete or describe it as shipped/production behavior in any specific ROS 2 distribution.",
+    "verification_status": "verified 2026-09-18: fetched, authors/content confirmed; re-verified 2026-09-18 (007R1) for date and implementation-status language after audit found the original card mis-scoped it to fleet/orchestration and asserted unsupported 'shipped' status"
+  },
+  "opc-ua-part3": {
+    "label": "OPC UA",
+    "title": "OPC Unified Architecture, Part 3: Address Space Model — RolePermissions / UserRolePermissions / AccessRestrictions (5.2.9–5.2.11)",
+    "author_or_org": "OPC Foundation",
+    "year": "current release",
+    "url": "https://reference.opcfoundation.org/specs/OPC-10000-3/5.2",
+    "source_type": "STANDARD",
+    "claim_scope": "Industrial-automation node-level access-control authorization — not functional safety.",
+    "why_it_matters": "An existing, widely deployed industrial-automation standard already attaches role-based permissions and access restrictions directly to individual nodes — a mature, narrower-scoped precedent for action-level authorization. This card is about that authorization mechanism specifically; it is not a functional-safety standard and establishes no functional-safety prior art.",
+    "verification_status": "verified 2026-09-18: fetched, section numbers and attribute names confirmed to match exactly"
+  },
+  "hse-permit-to-work": {
+    "label": "HSE",
+    "title": "Permit-to-work systems",
+    "author_or_org": "UK Health and Safety Executive",
+    "year": "current guidance",
+    "url": "https://www.hse.gov.uk/humanfactors/topics/ptw.htm",
+    "source_type": "OFFICIAL GUIDANCE",
+    "claim_scope": "Authorization is not the same thing as safety.",
+    "why_it_matters": "States the exact distinction PAC's own architecture depends on, in an unrelated, decades-old industrial-safety domain: “the issue of a permit does not, by itself, make a job safe.” Also the clearest limit-case for PAC's analogy, since a paper permit assumes a competent human, not an autonomous executor.",
+    "verification_status": "verified 2026-09-18: fetched, quote confirmed verbatim"
+  },
+  "oasis-xacml-3": {
+    "label": "OASIS",
+    "title": "eXtensible Access Control Markup Language (XACML) Version 3.0",
+    "author_or_org": "OASIS Standard",
+    "year": "2013",
+    "url": "https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html",
+    "source_type": "STANDARD",
+    "claim_scope": "XACML's differentiated policy-decision outcomes, as prior art for authorization-outcome semantics — not a claim about PAC's own implementation.",
+    "why_it_matters": "XACML distinguishes NotApplicable (no policy applies) from Indeterminate (evaluation failed or conflicted) as separate decision outcomes. PAC's D05 independently returns DEFER for unknown mandatory evidence; the two are not claimed to be equivalent, and this source is not evidence that PAC does or does not match that distinction — that question can only be answered from PAC's own artifacts. XACML is offered here as relevant prior art for thinking about differentiated authorization outcomes.",
+    "verification_status": "verified 2026-09-18: fetched/searched, decision semantics confirmed against the official OASIS standard text; wording narrowed 2026-09-18 (007R1) after audit found the original card asserted an unsupported one-to-one/two-to-one mapping onto PAC's own DEFER behavior"
+  },
+  "w3c-prov": {
+    "label": "W3C",
+    "title": "PROV-Overview: An Overview of the PROV Family of Documents",
+    "author_or_org": "W3C",
+    "year": "2013 (W3C Working Group Note)",
+    "url": "https://www.w3.org/TR/prov-overview/",
+    "source_type": "W3C WORKING GROUP NOTE",
+    "claim_scope": "Provenance, derivation, and lineage representation — not evidence-freshness policy or revocation semantics.",
+    "why_it_matters": "PROV is the standards-track model for representing entities, activities, and the agents involved in producing a piece of data — i.e., provenance and lineage, relevant to describing where PAC's evidence came from. It does not define evidence-freshness policy, evidence-age acceptance rules, or revocation ordering/races, which remain open PAC questions this document does not address.",
+    "verification_status": "verified 2026-09-18: fetched, confirmed this specific document is a W3C Working Group Note (not a Recommendation/standard); wording narrowed 2026-09-18 (007R1) after audit found the original card bound PROV too broadly to freshness and revocation semantics it does not cover"
+  },
+  "greensight-robotics-technician": {
+    "label": "company",
+    "title": "Robotics Technician — Boston, MA",
+    "author_or_org": "GreenSight (official careers page)",
+    "year": "posted 2026-03-11",
+    "url": "https://www.greensightag.com/job-listings/robotics-technician",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "GreenSight's Robotics Technician role and its stated responsibilities.",
+    "why_it_matters": "First-party listing confirming the exact responsibilities the dossier describes: building engineering prototypes, low/mid-volume robot and subassembly production, and troubleshooting/repairing drones and robots.",
+    "verification_status": "verified 2026-09-18: fetched directly from greensightag.com, title/location/responsibilities confirmed to match"
+  },
+  "boston-engineering-robotics": {
+    "label": "company",
+    "title": "Robotics — Centers of Excellence",
+    "author_or_org": "Boston Engineering (official site)",
+    "year": "current",
+    "url": "https://www.boston-engineering.com/solutions/technical-innovation/robotics/",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "Boston Engineering's stated centers of excellence.",
+    "why_it_matters": "First-party confirmation of the exact five centers of excellence the dossier names (Robotics, Control Systems, Embedded Systems, Digital Solutions, Design for X) and their described scope.",
+    "verification_status": "verified 2026-09-18: fetched directly from boston-engineering.com, all five centers confirmed to match"
+  },
+  "copley-careers": {
+    "label": "company",
+    "title": "About Us — Careers",
+    "author_or_org": "Copley Controls (official site, a business unit of Analogic Corporation)",
+    "year": "current",
+    "url": "https://copleycontrols.com/about-us/careers",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "Copley Controls' stated hiring roles and self-description, and its relationship to Analogic.",
+    "why_it_matters": "First-party confirmation that Copley Controls is Analogic's motion-control business unit, its team self-description, and that a Field Service Technician role has appeared alongside senior application/electrical engineering postings.",
+    "verification_status": "verified 2026-09-18: fetched (via search of copleycontrols.com/about-us and /about-us/careers), business-unit relationship, team description, and role list confirmed"
+  },
+  "chronospace-site": {
+    "label": "company",
+    "title": "ChronoSpace AI — Digitizing the 4D Physical World",
+    "author_or_org": "ChronoSpace (official site)",
+    "year": "current",
+    "url": "https://chronospace.ai/",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "ChronoSpace's stated product focus (a geometry-native foundation model for manufacturing/robotics/entertainment) and the absence of a visible public careers page.",
+    "why_it_matters": "First-party confirmation of the company's actual technical focus, used to ground an honest, speculative-interest dossier rather than an assumed opening.",
+    "verification_status": "verified 2026-09-18: fetched directly from chronospace.ai; homepage content and lack of a linked careers/jobs page confirmed"
+  },
+  "luminous-site": {
+    "label": "company",
+    "title": "Luminous Robotics, Inc. — official site",
+    "author_or_org": "Luminous Robotics (official site)",
+    "year": "current",
+    "url": "https://www.luminousrobotics.com/",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "Luminous Robotics' LUMI product, deployment model, and location.",
+    "why_it_matters": "First-party confirmation of what LUMI does, that it is field-deployed (not a lab prototype), and the company's Boston base.",
+    "verification_status": "verified 2026-09-18: fetched directly from luminousrobotics.com; product description and deployment claims confirmed"
+  },
+  "maxon-site": {
+    "label": "company",
+    "title": "maxon group — official site",
+    "author_or_org": "maxon (official site)",
+    "year": "current",
+    "url": "https://www.maxongroup.com/en-us",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "maxon's product lines, target industries, company size/history, and Taunton, MA presence.",
+    "why_it_matters": "First-party confirmation of what maxon manufactures and that it has an actual US manufacturing site, not just a sales office.",
+    "verification_status": "verified 2026-09-18: fetched directly from maxongroup.com; product lines, employee count, and Taunton location confirmed"
+  },
+  "maxon-taunton": {
+    "label": "secondary",
+    "title": "Maxon Precision Motors, Inc. — Taunton, MA (job listings and location profile)",
+    "author_or_org": "Indeed / Dun & Bradstreet listings for Maxon Precision Motors",
+    "year": "current",
+    "url": "https://www.indeed.com/cmp/Maxon-4/locations/MA/Taunton",
+    "source_type": "SECONDARY (JOB BOARD)",
+    "claim_scope": "The types of roles (manufacturing operator, warehouse, production-floor) recently visible at maxon's Taunton facility — not a specific current open requisition.",
+    "why_it_matters": "Only available signal (as of 2026-09-18) on what tier of role is typically open at the Taunton site, since maxon's own careers-page link returned a dead redirect. Used to frame a role-family expectation, not a verified current opening.",
+    "verification_status": "verified 2026-09-18: searched, listing types confirmed via Indeed's Taunton location page; maxongroup.us/en-us/career link found to 404 at time of check"
+  },
+  "fleet-site": {
+    "label": "company",
+    "title": "Fleet Robotics — official site",
+    "author_or_org": "Fleet Robotics (official site)",
+    "year": "current",
+    "url": "https://www.fleetrobotics.ai/",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "Fleet Robotics' product (submersible hull-cleaning/inspection robots), location, and target industry.",
+    "why_it_matters": "First-party confirmation of what Fleet Robotics builds and its Charlestown, MA location.",
+    "verification_status": "verified 2026-09-18: fetched directly from fleetrobotics.ai; product description and location confirmed"
+  },
+  "fleet-jobs": {
+    "label": "company",
+    "title": "Fleet Robotics — recruitment page",
+    "author_or_org": "Fleet Robotics (via Polymer recruitment platform)",
+    "year": "current",
+    "url": "https://jobs.polymer.co/fleet-robotics",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "That Fleet Robotics has an active recruitment page — not a specific verified open role.",
+    "why_it_matters": "Confirms Fleet Robotics is actively recruiting in some capacity; the dossier does not claim a specific named opening from this source.",
+    "verification_status": "verified 2026-09-18: link found on fleetrobotics.ai's own site; page existence confirmed, specific listings not enumerated"
+  },
+  "massrobotics-roster": {
+    "label": "organizer",
+    "title": "RoboBoston 2026 — Career Fair Hiring Companies",
+    "author_or_org": "MassRobotics (official event page)",
+    "year": "current, fetched 2026-09-18",
+    "url": "https://www.massrobotics.org/roboboston/",
+    "source_type": "ORGANIZER SOURCE",
+    "claim_scope": "The current, official RoboBoston 2026 career-fair hiring-company roster, including that 'Bogo Robotics' on that roster links to fleetrobotics.ai.",
+    "why_it_matters": "The authoritative, current source for which companies are confirmed 2026 career-fair hiring employers, used to reconcile the site's company pages against the actual roster rather than a remembered or assumed list. The page itself notes the roster is not final (\"more to be added\").",
+    "verification_status": "verified 2026-09-18: fetched directly from massrobotics.org/roboboston/; full company list and each company's linked URL confirmed, including the Bogo Robotics -> fleetrobotics.ai link"
+  },
+  "boost-site": {
+    "label": "company", "title": "Boost Robotics — official site", "author_or_org": "Boost Robotics (official site)",
+    "year": "current", "url": "https://www.boostrobotics.ai",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "Boost Robotics' product (autonomous data-center inspection/maintenance robots) and team background.",
+    "why_it_matters": "First-party confirmation of what Boost Robotics builds and its YC/NVIDIA Inception backing and team origins.",
+    "verification_status": "verified 2026-09-18: fetched directly from boostrobotics.ai; product and team claims confirmed"
+  },
+  "boost-jobs": {
+    "label": "company", "title": "Boost Robotics — careers page", "author_or_org": "Boost Robotics (via Gem recruitment platform)",
+    "year": "current", "url": "https://jobs.gem.com/boost-robotics",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "That Boost Robotics has an active careers page — not a specific verified open role.",
+    "why_it_matters": "Confirms active recruitment; the dossier does not claim a specific named opening from this source.",
+    "verification_status": "verified 2026-09-18: link found on boostrobotics.ai's own site; page existence confirmed, specific listings not enumerated"
+  },
+  "cerulion-site": {
+    "label": "company", "title": "Cerulion — Robot middleware that just works", "author_or_org": "Cerulion (official site)",
+    "year": "current", "url": "https://cerulion.com/",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "Cerulion's product (real-time robot middleware), team size, and absence of a dedicated careers page.",
+    "why_it_matters": "First-party confirmation of what Cerulion builds and its very small team size, used to ground an honest, low-fit dossier.",
+    "verification_status": "verified 2026-09-18: fetched directly from cerulion.com; product description, team size, and lack of careers page confirmed"
+  },
+  "mitsubishi-fa": {
+    "label": "company", "title": "Mitsubishi Electric US Industrial Automation — official site", "author_or_org": "Mitsubishi Electric Automation (official site)",
+    "year": "current", "url": "https://us.mitsubishielectric.com/fa/en",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "Mitsubishi Electric Automation's product lines, target industries, and early-career/internship hiring language.",
+    "why_it_matters": "First-party confirmation of the company's actual industrial-automation product lines and that it recruits early-career/new-grad/intern candidates, not only senior engineers.",
+    "verification_status": "verified 2026-09-18: fetched directly from us.mitsubishielectric.com/fa/en; product lines and careers language confirmed"
+  },
+  "ping-site": {
+    "label": "company", "title": "p!ng — official site", "author_or_org": "p!ng (official site)",
+    "year": "current", "url": "https://pingthru.com/",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "p!ng's product (autonomous robotic coffee drive-thru), current deployment status, and location.",
+    "why_it_matters": "First-party confirmation that p!ng is a single-location, customer-testing-stage deployment (Hudson, NH), not a mature multi-site fleet.",
+    "verification_status": "verified 2026-09-18: fetched directly from pingthru.com; deployment status and location confirmed"
+  },
+  "regent-site": {
+    "label": "company", "title": "REGENT — official site (careers)", "author_or_org": "REGENT Craft, Inc. (official site)",
+    "year": "current", "url": "https://www.regentcraft.com/careers",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "REGENT's Seaglider product, company size, open-role count, and internship program.",
+    "why_it_matters": "First-party/near-first-party confirmation of REGENT's product and that it runs a real internship program contributing to Seaglider development.",
+    "verification_status": "verified 2026-09-18: searched/fetched regentcraft.com and its careers page; product, size, and internship claims confirmed"
+  },
+  "sudo-site": {
+    "label": "company", "title": "sudo robotics — official site", "author_or_org": "sudo (official site)",
+    "year": "current", "url": "https://www.sudo.ai/?utm_source=luma",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "sudo's #sudo R1 product, its manipulation-centric foundation model, and target industries.",
+    "why_it_matters": "First-party confirmation of what sudo builds, used to ground an honest hardware-support-only fit angle rather than an AI-research claim.",
+    "verification_status": "verified 2026-09-18: fetched directly from sudo.ai; product description and target industries confirmed"
+  },
+  "synthium-site": {
+    "label": "company", "title": "Synthium — Spatial Intelligence for Robotics", "author_or_org": "Synthium (official site)",
+    "year": "current", "url": "https://www.synthium.xyz/?utm_source=luma",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "Synthium's product (HRI training-data simulation platform) and partnerships.",
+    "why_it_matters": "First-party confirmation of what Synthium builds, used to ground an honest, narrow-overlap dossier rather than overstating fit.",
+    "verification_status": "verified 2026-09-18: fetched directly from synthium.xyz; product description and partnerships confirmed"
+  },
+  "festo-careers": {
+    "label": "company", "title": "Festo USA — Careers and FIRST Robotics alumni hiring", "author_or_org": "Festo USA (official site)",
+    "year": "current", "url": "https://www.festo.com/us/en/e/careers-id_3685",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "Festo's product category (pneumatic/electrical automation) and its pattern of hiring FIRST Robotics alumni into internships/entry roles.",
+    "why_it_matters": "First-party (and Festo's own FIRST-alumni page) confirmation that Festo's entry-level hiring explicitly favors hands-on competition-robotics-style backgrounds, used to justify an entry-level framing.",
+    "verification_status": "verified 2026-09-18: searched festo.com/us/en careers and FIRST-alumni pages; hiring pattern and product category confirmed"
+  },
+  "walden-careers": {
+    "label": "company",
+    "title": "Work at Walden — Careers",
+    "author_or_org": "Walden Robotics (official site)",
+    "year": "current",
+    "url": "https://www.waldenrobotics.com/careers",
+    "source_type": "COMPANY SOURCE",
+    "claim_scope": "Walden's currently listed Robot Hardware roles and its stated hiring philosophy.",
+    "why_it_matters": "First-party confirmation of the three specific roles named in the dossier (Mechanical Design Engineer, Hardware Reliability and Test, Firmware/Embedded/Functional Safety) and the exact “raw potential” language the dossier quotes.",
+    "verification_status": "verified 2026-09-18: fetched directly from waldenrobotics.com, roles and quote confirmed verbatim"
+  }
+}

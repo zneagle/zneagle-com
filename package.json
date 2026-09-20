@@ -1,0 +1,16 @@
+{
+  "name": "zneagle-com",
+  "private": true,
+  "license": "UNLICENSED",
+  "description": "zneagle.com static site. No build step: ./public is published as-is; scripts/sync_shell.py only rewrites the shared page shell in place.",
+  "scripts": {
+    "shell": "python3 scripts/sync_shell.py",
+    "check": "python3 scripts/sync_shell.py --check && python3 scripts/check.py && node scripts/test_actuator.js && python3 scripts/qr_verify.py",
+    "dev": "wrangler dev",
+    "deploy:dry": "npm run check && wrangler deploy --dry-run",
+    "deploy": "npm run check && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.132.0"
+  }
+}

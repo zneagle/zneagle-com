@@ -1,0 +1,1271 @@
+/* zneagle.com/r — RoboBoston 2026 recruiter surface (draft, gui/dev).
+   Chassis: very dark forest green, softened off-white text. Every hue here is PROVISIONAL.
+   Colour is state, not paint:
+     neutral        established structure and evidence
+     cold           information, signal, selection, focus, work underway
+     warm           physical consequence — rare
+     dashed / dim   unresolved or pending
+   010F4: the cold/warm ROLES are unchanged (see above) — only their hues
+   moved, from generic light-blue/orange to a forest-complement pair: dusty
+   lavender for cold (info/observation/interface/feedback), muted rose for
+   warm (physical consequence/intervention/actuation). Every usage in this
+   file already went through these two tokens (plus --cold-2/--cold-glow),
+   so retuning the four hex/rgba values below is the entire change — see
+   the :root block for exact values and the contrast notes there. No third
+   (champagne/brass) accent was added: nothing in the current file has a
+   rare-annotation role that isn't already served by cold/warm/neutral, and
+   the brief was explicit not to add one just to distribute color.
+   Motion hooks (structure now, animation later) are listed at the end of this file. */
+:root{
+  color-scheme:dark;
+  /* Chassis: same forest-green hue family as before (140–156°), lifted in
+     luminance and saturation on 2026-09-18 (owner: "too dark... deep forest
+     green, NOT near-black green") plus a foreground lift the same day. Layer
+     order unchanged (void darkest, panel-2 brightest/raised), gap between
+     steps widened for clearer separation. */
+  --void:#151e1a;
+  --field:#192420;
+  --panel:#1f2d24;
+  --panel-2:#2d4336;
+  /* Foreground family (2026-09-18, 008F — one more lift on top of 008D):
+     off-white with a sage tint. Same hue (122°) and saturation (30%) as
+     008D — the owner explicitly said not to move toward neutral white or
+     change the hue family, so this step is luminance-only. The lift is
+     NOT uniform: --ink-2 is what .prose p / .doc-lede actually render body
+     copy in (see .prose p below), and the owner named body copy on
+     /r/thesis specifically as "still too green/dim" — so --ink-2 and
+     --ink-3 moved +6pt while --ink-strong (headings, already closest to
+     the off-white target) only moved +2pt, keeping a real but compressed
+     hierarchy (93/90/87/82/77 instead of 91/86/81/76/71). Every tier's
+     contrast against every background only went up from 008D's numbers
+     (raising L against unchanged, darker chassis can't regress contrast),
+     worst case is now 6.71:1 (faint-text vs --panel-2, was 5.86) — see the
+     008F contrast matrix. --faint-text is for anything read as text
+     (breadcrumbs, captions, labels, metadata) — nothing decorative shares
+     this token; a genuinely non-text decorative mark should use --guide or
+     its own token (see --stripe-rgb below), which are exempt from
+     text-contrast requirements. */
+  --ink:#deedde;
+  --ink-strong:#e8f3e8;
+  --ink-2:#d4e8d5;
+  --ink-3:#c3dfc4;
+  --faint-text:#b3d6b4;
+  --rule:#28362d;
+  --rule-2:#37493c;
+  --rule-3:#4f6455;
+  --guide:rgba(153,195,154,.05);
+  /* 010F4: forest-complement accent pair, replacing the previous generic
+     light-blue/orange. --cold is the owner-given starting reference
+     (#C9B7D9) used as-is — checked against every chassis surface it
+     actually renders text on (--cold is used as solid text fill in ~25
+     places: .sect-idx/.rail-title/.h-idx/.ctx-k/.doc-kicker .k and
+     similar mono captions, .bus-k, .seq li:last-child, .stmt span,
+     .chain-t on cold/boundary nodes): 9.13:1 on --void down to 5.72:1 on
+     --panel-2, essentially identical to the old blue's 9.31->5.83 — no
+     regression. --cold-2 is DERIVED (same hue, -16% lightness) rather
+     than a second owner value, because it is never used as text fill in
+     this file — only border-color and one text-decoration-color — so it
+     only had to stay "perceptible," not hit a text-contrast floor; tuned
+     to land within ~0.1 of the old blue-2's own border-only contrast
+     profile (5.01/4.70/4.23/3.14 on void/field/panel/panel-2) rather than
+     drifting weaker by accident. --warm is the owner-given rose
+     (#D7A7B3): 8.17:1 down to 5.12:1, slightly STRONGER than the old
+     orange (7.90->4.95) at every surface. All four numbers assume normal
+     (not large) text against the listed background; the weakest case in
+     both families is against --panel-2, still comfortably above the
+     4.5:1 AA floor. */
+  --cold:#C9B7D9;
+  --cold-2:#A17DC2;
+  --cold-glow:rgba(201,183,217,.22);
+  --warm:#D7A7B3;
+  --sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --gutter:clamp(16px,4vw,56px);
+  --measure:1320px;
+  --topbar-h:56px;
+  /* 010E11: shared vertical-rhythm scale for the homepage narrative flow —
+     tight (label -> its own heading/list), flow (the default gap between
+     closely related blocks: heading -> content, headline -> support ->
+     bridge -> taxonomy -> closing line -> trajectory -> CTA), section
+     (only where the subject actually changes, e.g. thesis -> companies).
+     Homepage-only classes (.sect*, .chain-bridge, .chain-closing) consume
+     these directly; .chain-fig/.seq/.seq-cap stay untouched because they're
+     shared with /r/thesis and /r/research/pac.
+     010E12/13: --space-breath is a deliberate one-off tier between flow and
+     section, added because neither fit the taxonomy's entrance gap
+     (flow read as ordinary paragraph spacing; section read as a full
+     subject change) — currently used once, bridge -> taxonomy only.
+     010E13: owner rejected the 40px margin result as visually
+     indistinguishable from ordinary flow despite computing correctly, so
+     this now targets 56px desktop / 40px at narrow viewports and is
+     applied as padding (below), which never collapses. */
+  --space-tight:8px;
+  --space-flow:20px;
+  --space-breath:clamp(40px,8vw,56px);
+  --space-section:clamp(48px,8vh,96px);
+  /* 010F: section-enclosure spacing. --enclosure-pad is the enclosure's
+     OWN internal padding, deliberately smaller than --space-section now
+     that inter-section separation is a guaranteed flex gap (main, below)
+     rather than stacked padding.
+     010F2: owner rejected 010F's hard 1px border + flat tint + radius as
+     "another competing line system" against the background circuit
+     geometry. Replaced with a soft radial field (see .sect::before) — no
+     border, no radius, no flat rectangular fill.
+     010F3: owner rejected even the bordered-free 010F2 version as still
+     reading as "a section" — renamed to what it actually is, a localized
+     content luminance field, not an enclosure of any kind. All three
+     tiers share one hue (--panel's rgb, 31/45/36 — no new hue) and the
+     same 4-stop falloff curve (owner-specified: peak at center, ~60% of
+     peak at 35%, ~25% of peak at 65%, 0 at 100%), only the peak alpha
+     differs per tier. */
+  --field-peak-weak:.22;
+  --field-peak:.34;
+  --field-peak-strong:.46;
+  --enclosure-pad:clamp(32px,5vh,56px);
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --t-fast:140ms;
+  --t:220ms;
+  --t-slow:300ms;
+  /* Shared circuit-geometry tokens (2026-09-18, 008H). These describe values
+     that were already consistent across the substrate's hand-drawn paths
+     (every corner turn is a 20-unit quarter-turn; junction/entry nodes use
+     r=5/6/7 depending on role, control terminals are a uniform 9x9 square)
+     — naming them here doesn't change the artwork, it lets the
+     primary/secondary stroke split below, and any future soundtrack
+     circuit-tree, reference the same vocabulary instead of re-deriving it. */
+  --geo-line-w:1px;
+  --geo-line-w-primary:1.35px;
+  --geo-node-d:10px;
+  --geo-node-d-lg:14px;
+  --geo-terminal-d:9px;
+  --geo-radius:20px;
+  --geo-branch-gap:40px;
+  --geo-glow:drop-shadow(0 0 3px currentColor);
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--void);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  -webkit-text-size-adjust:100%;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--topbar-h) + 20px);scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;min-height:100svh;display:flex;flex-direction:column;background:var(--void)}
+/* 010F/010F1: hero stays free-floating (no enclosure, no change to its own
+   rules); the sections below it (.sect) become bounded enclosures. This
+   flex gap is the single, non-collapsing source for every top-level gap
+   below main — hero -> first enclosure, and enclosure -> enclosure alike —
+   replacing the old .sect+.sect shared-border/stacked-padding scheme. */
+main{flex:1 0 auto;min-width:0;display:flex;flex-direction:column;gap:var(--space-section)}
+p{margin:0 0 1em}
+h1,h2,h3{margin:0;font-weight:700;line-height:1.12;letter-spacing:-.015em;text-wrap:balance}
+ul,ol{margin:0;padding:0;list-style:none}
+img,svg{max-width:100%}
+a{color:inherit;text-decoration-color:var(--rule-3);text-underline-offset:.22em;text-decoration-thickness:1px;transition:color var(--t-fast) var(--ease),text-decoration-color var(--t-fast) var(--ease)}
+a:hover{text-decoration-color:var(--cold)}
+:focus-visible{outline:2px solid var(--cold);outline-offset:3px;border-radius:2px}
+::selection{background:rgba(201,183,217,.3);color:var(--ink-strong)}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.skip{position:absolute;left:12px;top:-120px;z-index:100;padding:12px 16px;background:var(--ink);color:var(--void);font-weight:650;text-decoration:none}
+.skip:focus{top:10px}
+
+/* ---------- top bar: name, path, persistent Contact ---------- */
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:clamp(12px,2vw,24px);height:var(--topbar-h);padding:0 var(--gutter);background:rgba(11,15,13,.9);border-bottom:1px solid var(--rule);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.brand{display:inline-flex;align-items:center;gap:12px;flex:none;min-height:44px;color:var(--ink);text-decoration:none;font-size:.8rem;font-weight:650;letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.brand-mark{width:21px;height:21px;flex:none;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:square;transition:stroke var(--t-fast) var(--ease)}
+.brand:hover .brand-mark{stroke:var(--cold)}
+[data-mode="discovery"] .brand-name{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.crumbs{min-width:0;font-family:var(--mono);font-size:.76rem;letter-spacing:.03em;color:var(--faint-text)}
+.crumbs ol{display:flex;align-items:center;min-width:0;white-space:nowrap}
+.crumbs li{display:flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.crumbs li+li::before{content:"/";margin:0 .55em;color:var(--rule-3)}
+.crumbs a{color:var(--faint-text);text-decoration:none}
+.crumbs a:hover{color:var(--ink)}
+.crumbs [aria-current="page"]{color:var(--ink)}
+[data-mode="discovery"] .crumbs{display:none}
+@media (max-width:719px){
+  .brand-name{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  /* the page title sits just below, so on phones the bar keeps only the current step */
+  .crumbs li:not(:last-child){display:none}
+  .crumbs li:last-child::before{display:none}
+}
+.topbar-end{display:flex;align-items:center;gap:8px;margin-left:auto}
+.topbar-contact{display:inline-flex;align-items:center;height:36px;padding:0 14px;border:1px solid var(--rule-3);border-radius:6px;font-size:.88rem;font-weight:600;color:var(--ink);text-decoration:none;transition:border-color var(--t-fast) var(--ease),background-color var(--t-fast) var(--ease)}
+.topbar-contact:hover{border-color:var(--cold);background:var(--panel)}
+.cmdk-trigger{display:inline-flex;align-items:center;gap:10px;height:36px;padding:0 8px 0 12px;border:1px solid var(--rule-2);border-radius:6px;background:var(--panel);color:var(--ink-3);font:inherit;font-size:.84rem;cursor:pointer;transition:border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+.cmdk-trigger:hover{border-color:var(--cold-2);color:var(--ink)}
+.cmdk-trigger kbd{padding:2px 6px;border:1px solid var(--rule-2);border-radius:4px;font-family:var(--mono);font-size:.72rem;color:var(--faint-text)}
+.cmdk-trigger[hidden]{display:none}
+@media (max-width:719px){.cmdk-trigger{display:none}}
+
+/* ---------- route menu (a <details>: works without JavaScript) ---------- */
+.menu>summary{display:inline-flex;align-items:center;gap:10px;height:36px;padding:0 12px;border:1px solid var(--rule-2);border-radius:6px;list-style:none;cursor:pointer;font-size:.86rem;color:var(--ink-2);user-select:none}
+.menu>summary::-webkit-details-marker{display:none}
+.menu>summary::marker{content:""}
+.menu-icon{position:relative;width:15px;height:9px;border-top:1px solid currentColor;border-bottom:1px solid currentColor;transition:transform var(--t) var(--ease)}
+.menu[open]>summary{border-color:var(--cold-2);color:var(--ink)}
+.menu[open] .menu-icon{transform:scaleY(.08)}
+.menu-panel{position:absolute;left:0;right:0;top:100%;z-index:41;max-height:calc(100svh - var(--topbar-h));overflow-y:auto;padding:16px var(--gutter) 32px;background:rgba(11,15,13,.98);border-bottom:1px solid var(--rule-2)}
+@media (min-width:1080px){[data-mode="discovery"] .menu{display:none}}
+
+/* ---------- the RoboBoston route: a bus with junctions (menu + rail) ---------- */
+.nav-home{display:flex;align-items:center;gap:12px;min-height:40px;padding:6px 10px;margin-bottom:6px;border:1px solid var(--rule-2);border-radius:4px;color:var(--ink-2);text-decoration:none;font-size:.93rem}
+.nav-home:hover{border-color:var(--cold-2);color:var(--ink)}
+.nav-home[aria-current]{border-color:var(--cold-2);color:var(--ink-strong)}
+.nav-cap{margin:18px 0 6px 18px;font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint-text)}
+.bus{position:relative;padding-left:18px}
+.bus::before{content:"";position:absolute;left:4px;top:4px;bottom:4px;width:1px;background:var(--rule-2)}
+.bus li{position:relative}
+.bus a{position:relative;display:flex;align-items:center;gap:12px;min-height:40px;padding:5px 10px;border-radius:4px;color:var(--ink-3);text-decoration:none;font-size:.93rem;transition:color var(--t-fast) var(--ease),background-color var(--t-fast) var(--ease)}
+.bus a::before{content:"";position:absolute;left:-14px;top:50%;width:14px;height:1px;background:var(--rule-2);transition:background-color var(--t-fast) var(--ease)}
+.bus a::after{content:"";position:absolute;left:-17px;top:calc(50% - 3.5px);width:7px;height:7px;border:1px solid var(--rule-3);border-radius:50%;background:var(--void);transition:border-color var(--t-fast) var(--ease),background-color var(--t-fast) var(--ease),box-shadow var(--t) var(--ease)}
+.bus a:hover{color:var(--ink);background:var(--panel-2)}
+.bus a:hover::before{background:var(--cold)}
+.bus a:hover::after{border-color:var(--cold)}
+.bus a[aria-current="page"]{color:var(--ink-strong);background:var(--panel-2)}
+.bus a[aria-current="page"]::before{background:var(--cold)}
+.bus a[aria-current="page"]::after{border-color:var(--cold);background:var(--cold);box-shadow:0 0 0 3px var(--cold-glow)}
+.bus a[aria-current="true"]{color:var(--ink)}
+.bus a[aria-current="true"]::after{border-color:var(--cold)}
+.bus-k{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--faint-text);min-width:1.7em}
+.bus a[aria-current="page"] .bus-k{color:var(--cold)}
+.bus--sub{margin:0 0 4px 12px;padding-left:16px}
+.bus--sub::before{top:0;bottom:12px}
+.bus--sub a{min-height:32px;font-size:.86rem;padding:3px 10px}
+.bus--sub a::before{left:-12px;width:12px}
+.bus--sub a::after{left:-15px;width:6px;height:6px;top:calc(50% - 3px)}
+
+/* ---------- evidence labels: what kind of evidence a statement rests on ---------- */
+.state{display:inline-flex;align-items:center;gap:7px;height:22px;padding:0 8px;border:1px solid var(--rule-3);border-radius:3px;font-family:var(--mono);font-size:.66rem;font-weight:500;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.state::before{content:"";flex:none;width:6px;height:6px;background:var(--ink-2)}
+.state:is([data-state="research"],[data-state="progress"]){border-color:var(--cold-2);color:var(--cold)}
+.state:is([data-state="research"],[data-state="progress"])::before{background:none;border:1px solid var(--cold);border-radius:50%}
+.state:is([data-state="open"],[data-state="unknown"]){border-style:dashed;color:var(--ink-3)}
+.state:is([data-state="open"],[data-state="unknown"])::before{background:none;border:1px dashed var(--ink-3)}
+
+/* ---------- content state: real text carries no marker; draft and pending say so ---------- */
+.pending{padding:16px 18px;border:1px dashed var(--rule-3);background:repeating-linear-gradient(135deg,transparent 0 9px,rgba(229,232,225,.014) 9px 10px)}
+.pending+.pending{margin-top:12px}
+.pending-k{display:flex;align-items:center;gap:10px;margin:0 0 8px;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.pending-k::before{content:"";flex:none;width:8px;height:8px;border:1px dashed var(--ink-3)}
+.pending p{max-width:62ch;margin:0;font-size:.95rem;color:var(--ink-3)}
+p.draft-k{display:block;max-width:none;margin:0 0 18px;line-height:1.6;padding:8px 12px;border-left:2px dotted var(--ink-3);font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)!important}
+.draft-k strong{margin-right:10px;font-weight:600;color:var(--ink)}
+.pending p.pending-k{margin:0 0 8px;font-size:.68rem;color:var(--ink-3)}
+
+/* ================= DISCOVERY — /r, the exterior of the machine ================= */
+/* Routing substrate motion (2026-09-18, B16): .pkt now loops (was a single
+   one-shot travel, "1 both") at 4-12s, linear, staggered per-path so packets
+   never resync. .pulse is new — a slow opacity breathing on select control
+   nodes and the transform block, standing in for "node activation" /
+   "state transition" without redrawing any line. .draw's one-time reveal on
+   load is unchanged.
+   2026-09-18, 008D: brightness raised another step (owner: "still too
+   subtle"), propagation/pulse coverage widened and durations moved to
+   irregular values so nothing resyncs, and a branch event added at the
+   z-control fork (two real existing sub-paths from the same origin, second
+   one delayed) per "one signal reaches junction, two fragments illuminate at
+   different delays". A second, much sparser variant (.sv-insp, its own low
+   opacity below) now also runs on inspection pages — see the shared
+   site/shell/inspection-substrate.html partial. [data-mode="inspection"]
+   main now gets the same position:relative;z-index:1 the discovery hero
+   already had, so that partial (and the signal-stripe, which relied on the
+   same fixed/z-index:0 layering without it) is reliably painted behind text
+   rather than by paint-order coincidence. */
+[data-mode="discovery"] main{position:relative;z-index:1}
+[data-mode="inspection"] main{position:relative;z-index:1}
+.substrate{position:fixed;inset:0;z-index:0;pointer-events:none;color:var(--ink);background-image:linear-gradient(to right,var(--guide) 1px,transparent 1px);background-size:calc(100% / 12) 100%}
+.substrate svg{position:absolute;inset:0;width:100%;height:100%}
+.sv{fill:none;stroke:currentColor;stroke-width:var(--geo-line-w);stroke-linecap:square}
+.sv .g{opacity:.17;transition:opacity 900ms var(--ease)}
+/* Primary/secondary route hierarchy (008H, Part 5): every taxonomy group
+   still carries its own data-trace (signal/routing/transformation/control/
+   interface/consequence/feedback) from earlier passes — that's the exact
+   hook used here, no new markup needed. z-measure is the one group with no
+   data-trace, and stays secondary: base line weight, base opacity tier
+   only, no zone/hover boost, no pkt/pulse — it's allowed to sit
+   "completely static" per spec. */
+.substrate g[data-trace]{stroke-width:var(--geo-line-w-primary)}
+.sv .solid{fill:currentColor;stroke:none}
+.sv .node{fill:var(--void)}
+.sv .dash{stroke-dasharray:5 7}
+.sv .cold{color:var(--cold)}
+.sv .warm{color:var(--warm)}
+.sv .draw{stroke-dasharray:100}
+.sv .dash.draw{stroke-dasharray:5 7}
+.sv .pkt{stroke-width:2.4;stroke-linecap:round;stroke-dasharray:1.4 400;stroke-dashoffset:2;opacity:.7}
+/* ---------- 011B4: robotic actuation cell ----------
+   Geometry only here — rotation/transition lives in the reduced-motion-
+   aware block below, same split the rest of this file already uses.
+   The cell is a small process cell: inbound wire -> pickup node ->
+   articulated arm -> transfer workspace -> drop node -> outbound wire.
+   .act-layer sits above the dim topology groups at its own opacity (the
+   same idea as .z-active) so the machine reads as a machine, not as a
+   faint decoration; strokes are heavier than the ambient geometry. */
+.substrate .g.act-layer,.substrate .g.act-fade{opacity:.92}
+.act-cell{color:var(--cold)}
+.act-link{stroke-width:3.4;stroke-linecap:round}
+.act-eff{stroke-width:2.6;stroke-linecap:round}
+.act-node{stroke-width:2}
+.act-wire{stroke:currentColor;stroke-width:var(--geo-line-w-primary);opacity:.7}
+.act-station{stroke-width:1.8}
+.act-tick{stroke-width:1.4;opacity:.8}
+.act-station--in,.act-station--out,.act-station--alt{color:var(--cold)}
+.act-capsule{fill:var(--ink-strong);stroke:none;opacity:0;pointer-events:none}
+/* Glow only while the capsule is riding the end effector (its parent is
+   the wrist group) — the only "holding" cue, no new colour. */
+.act-wrist .act-capsule{filter:var(--geo-glow);color:var(--cold)}
+.act-status{fill:var(--faint-text);stroke:none;opacity:.5;transition:opacity var(--t) var(--ease),fill var(--t) var(--ease)}
+/* Live state is published by site.js as data-* TRACE hooks on .substrate
+   (data-actuator-state = IDLE | REACHING | GRIPPING | TRANSFERRING |
+   PLACING | SETTLED), so the cell reads the same real state the hooks
+   expose rather than a parallel copy. */
+.substrate:is([data-actuator-state="REACHING"],[data-actuator-state="GRIPPING"],[data-actuator-state="TRANSFERRING"],[data-actuator-state="PLACING"]) .act-status{fill:var(--cold);opacity:.9}
+.substrate:is([data-actuator-state="REACHING"],[data-actuator-state="GRIPPING"],[data-actuator-state="TRANSFERRING"],[data-actuator-state="PLACING"]) .act-cell{filter:var(--geo-glow)}
+/* Once PAC holds authority the cell's wires belong to the capsule alone:
+   the ambient packets that used to arrive on them stay hidden, so exactly
+   one capsule is ever in play. */
+.substrate[data-actuator-mode="PAC_AUTHORITY"] .pkt-act{visibility:hidden}
+.sv-portrait{display:none}
+@media (max-width:719px){.sv-land{display:none}.sv-portrait{display:block}}
+.substrate[data-zone="hero"] :is(.z-signal,.z-route){opacity:.26}
+.substrate[data-zone="thesis"] :is(.z-transform,.z-interface,.z-feedback,.z-consequence){opacity:.31}
+.substrate[data-zone="company"] :is(.z-signal,.z-route,.z-control){opacity:.33}
+.substrate[data-zone="evidence"] .z-consequence{opacity:.35}
+.substrate[data-zone="pac"] :is(.z-transform,.z-route){opacity:.38}
+body:has(.act[href="#companies"]:is(:hover,:focus-visible)) .substrate :is(.z-signal,.z-route){opacity:.4}
+body:has(.act[href="/r/resume"]:is(:hover,:focus-visible)) .substrate .z-route{opacity:.4}
+body:has(.act[href="#contact"]:is(:hover,:focus-visible)) .substrate :is(.z-consequence,.z-feedback){opacity:.42}
+body:has(.chain:hover) .substrate :is(.z-interface,.z-feedback){opacity:.4}
+body:has(.selector-list a:hover) .substrate :is(.z-route,.z-control){opacity:.4}
+/* 008L, Part 6/12: three formal circuit states. DORMANT is everything
+   above (unchanged) — the static topology's own opacity, gated by scroll
+   zone/hover exactly as before. ENERGIZED is .z-active, the group that
+   carries the taxonomy packets (renamed from .z-route in 008H so it no
+   longer matches the zone/hover rules above and stops being multiplied
+   by whatever dim tier the dormant topology happens to be at) — it now
+   has its own flat, always-on opacity, independent of scroll position,
+   so "the moving signal visibly pops" everywhere, not just in zones that
+   already happened to be brighter. ARRIVAL/GLARE is .glare, likewise
+   independent, opacity driven entirely by its own brief @keyframes
+   glare-flare (0 at rest) rather than any ambient tier. */
+.substrate .z-active{opacity:.85}
+.substrate .glare{opacity:1}
+.sv-insp .g{opacity:.06}
+.sv-insp .pkt{opacity:.55}
+
+/* ---------- hero: identity + RoboBoston context ---------- */
+.hero{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:clamp(24px,4.5vh,56px);min-height:calc(100svh - var(--topbar-h));padding:clamp(26px,5vh,66px) max(var(--gutter),calc((100% - var(--measure))/2))}
+.hero::after{content:"";position:absolute;inset:clamp(8px,1.6vw,22px);pointer-events:none;opacity:.5;background:
+  linear-gradient(var(--ink),var(--ink)) left top/18px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) left top/1px 18px no-repeat,
+  linear-gradient(var(--ink),var(--ink)) right top/18px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) right top/1px 18px no-repeat,
+  linear-gradient(var(--ink),var(--ink)) left bottom/18px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) left bottom/1px 18px no-repeat,
+  linear-gradient(var(--ink),var(--ink)) right bottom/18px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) right bottom/1px 18px no-repeat}
+.hero-name{display:flex;align-items:center;gap:clamp(12px,2vw,20px);margin:0;font-size:clamp(.72rem,1vw,.84rem);font-weight:650;letter-spacing:.3em;text-transform:uppercase;color:var(--ink)}
+.hero-rule{flex:1;height:1px;background:linear-gradient(to right,var(--rule-3),var(--rule) 70%,transparent)}
+.hero-tag{font-family:var(--mono);font-size:.7rem;font-weight:500;letter-spacing:.14em;color:var(--faint-text);white-space:nowrap}
+.hero-statement{margin:0;font-size:1rem;font-weight:inherit;line-height:1;letter-spacing:normal}
+.hero-line{display:block}
+.hero-line--lead{max-width:8em;font-size:clamp(2.4rem,5.6vw,5.2rem);font-weight:760;line-height:.94;letter-spacing:-.03em;text-transform:uppercase;color:var(--ink-strong)}
+.hero-line--follow{position:relative;max-width:34ch;margin-top:clamp(20px,2.8vw,38px);padding-left:clamp(26px,4vw,58px);font-size:clamp(1.02rem,1.5vw,1.35rem);font-weight:500;line-height:1.35;text-transform:uppercase;letter-spacing:.01em;color:var(--ink-3)}
+.hero-line--follow::before{content:"";position:absolute;left:0;top:.66em;width:clamp(18px,3vw,44px);height:1px;background:var(--ink);transform-origin:left}
+.hero-line--follow::after{content:"";position:absolute;left:clamp(18px,3vw,44px);top:calc(.66em - 2.5px);width:6px;height:6px;margin-left:-3px;background:var(--warm)}
+.hero-foot{display:grid;gap:clamp(18px,2.6vw,32px);align-items:end}
+@media (min-width:980px){.hero-foot{grid-template-columns:auto minmax(0,1fr)}}
+.hero-context{margin:0;font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;line-height:1.7;color:var(--faint-text)}
+@media (min-width:980px){.hero-context{justify-self:end;text-align:right}}
+.ctx{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 18px;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;color:var(--ink-3)}
+.ctx-k{text-transform:uppercase;letter-spacing:.14em;color:var(--cold)}
+.ctx a{color:var(--ink);text-decoration-color:var(--cold-2)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.act{display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:0 18px;border:1px solid var(--rule-3);border-radius:4px;background:rgba(11,15,13,.55);color:var(--ink);font-size:.93rem;font-weight:600;text-decoration:none;transition:border-color var(--t-fast) var(--ease),background-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+.act-k{font-family:var(--mono);font-size:.7rem;font-weight:500;color:var(--faint-text)}
+.act-go{font-family:var(--mono);color:var(--faint-text);transition:transform var(--t) var(--ease),color var(--t-fast) var(--ease)}
+.act:hover{border-color:var(--cold);background:var(--panel)}
+.act:hover .act-go{transform:translateX(3px);color:var(--cold)}
+.act--primary{background:var(--ink);border-color:var(--ink);color:var(--void)}
+.act--primary .act-k,.act--primary .act-go{color:rgba(11,15,13,.55)}
+.act--primary:hover{background:var(--ink-strong);border-color:var(--ink-strong)}
+.act--primary:hover .act-go{color:var(--void)}
+
+/* ---------- /r sections: soft field boundaries (010F, reworked 010F2) ----------
+   Only .sect and its children (thesis/companies/evidence/peer) get this
+   treatment — .hero is a sibling of .sect inside main, not a .sect itself,
+   so it's structurally excluded: no wrapper, no field, nothing to remove
+   to keep it free-floating. Horizontal gutter stays on margin (010F) so
+   the field is centered on an inset box (min(100%,--measure)) rather than
+   running full-bleed; padding is the enclosure's internal breathing room.
+   010F2: no border, no border-radius, no flat background — those read as
+   "a rounded rectangle" competing with the substrate's own line language.
+   isolation:isolate gives .sect its own stacking context so the ::before
+   field's z-index:-1 stays scoped to sitting behind THIS section's own
+   text, without accidentally comparing against the page's fixed z-index:0
+   substrate layer and sinking below it. */
+.sect{position:relative;isolation:isolate;margin:0 max(var(--gutter),calc((100% - var(--measure))/2));padding:var(--enclosure-pad) clamp(20px,3.5vw,44px)}
+/* The field itself (010F3): a "pool of light" behind content, not a box.
+   4-stop radial gradient (owner spec) — peak at center, ~60% of peak at
+   35%, ~25% of peak at 65%, fully transparent at 100% — is a materially
+   gentler falloff curve than 010F2's 2-stop version, so there's no point
+   where the eye can register an edge. inset bleeds the field well past
+   .sect's own box (vertical bleed is generous since vertical overflow is
+   harmless; horizontal stays small — no global overflow-x:hidden exists
+   on this page, so a large horizontal bleed at narrow viewports risked a
+   real horizontal scrollbar, not just a visual concern). z-index:-1
+   (scoped by .sect's isolation:isolate) keeps it behind this section's
+   own text but still above the substrate. Single gradient background,
+   nothing animated, no filter/backdrop-filter/shadow — same cost as
+   010F2, just tuned to feel like light rather than a boundary. */
+.sect::before{content:"";position:absolute;inset:-22% -3%;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 74% 92% at 50% 45%,
+    rgba(31,45,36,var(--field-peak)) 0%,
+    rgba(31,45,36,calc(var(--field-peak) * .6)) 35%,
+    rgba(31,45,36,calc(var(--field-peak) * .25)) 65%,
+    transparent 100%)}
+/* Thesis: strongest field (owner: densest interactive content). */
+#thesis::before{inset:-28% -4%;background:radial-gradient(ellipse 80% 96% at 50% 45%,
+    rgba(31,45,36,var(--field-peak-strong)) 0%,
+    rgba(31,45,36,calc(var(--field-peak-strong) * .6)) 35%,
+    rgba(31,45,36,calc(var(--field-peak-strong) * .25)) 65%,
+    transparent 100%)}
+/* Companies: weaker field (owner: "if helpful" — rows stay flat/dense,
+   the field only has to lightly separate the list from the substrate). */
+#companies::before{background:radial-gradient(ellipse 66% 80% at 50% 45%,
+    rgba(31,45,36,var(--field-peak-weak)) 0%,
+    rgba(31,45,36,calc(var(--field-peak-weak) * .6)) 35%,
+    rgba(31,45,36,calc(var(--field-peak-weak) * .25)) 65%,
+    transparent 100%)}
+/* 011C3 A, feathered reading capsules (supersedes 011C2 blur and 011C2R radial fields).
+   Each dense reading block sits in a dark forest capsule that is strong across the WHOLE text
+   footprint and dissolves only in the bleed band around it, so it reads as a deliberate local
+   enclosure with no traceable edge. One ::before per block, static CSS, no blur, no filter.
+     fill     flat rgba(--rf, .84): --rf is the existing --field forest (25,36,32); no new colour
+     profile  along the bleed band, edge to text: 0 -> .08 -> .35 -> .75 -> 1 of the fill, i.e.
+              centre .84, mid ~.63, outer ~.29, edge 0
+     mask     x ramp and y ramp (px, intersected) plus a broad ellipse that only trims the outer
+              corners, so the shape is a soft capsule, never a literal box
+     bleed    --rf-x up to 52px sideways, --rf-y up to 46px above and below; --rf-x is clamped so it
+              stays inside the section padding (no horizontal overflow at 390px)
+   Stacking: the blocks are position:relative but make NO stacking context, so each ::before at
+   z-index:-1 joins .sect's isolated context and paints under every piece of text in the section:
+   substrate/robot -> capsule -> text. No border, outline, radius or shadow.
+   The broad section luminance pools (.sect::before, 010F3) are retired for these five sections: the
+   capsules now do that job locally, and a wide pool under a capsule read as diffuse haze. Delete the
+   "retired" rule below to bring them back. Not treated: hero, nav, lede, statement, labels, CTAs,
+   the schematic, the PAC replay readout (its cells are already opaque). */
+:is(#thesis,#companies,#evidence,#pac,#peer){--rf:25,36,32;--rf-x:clamp(14px,4.4vw,52px);--rf-y:clamp(26px,4.6vh,46px)}
+:is(#thesis,#companies,#evidence,#pac,#peer) :is(.sect-sub,.chain-bridge,.chain-closing,.seq,.sect-note,.pac-offline,.pac-cases,.pac-rule,.ledger--links,.selector-list,.sel-filter,.sel-note){position:relative}
+:is(#thesis,#companies,#evidence,#pac,#peer) :is(.sect-sub,.chain-bridge,.chain-closing,.seq,.sect-note,.pac-offline,.pac-cases,.pac-rule,.ledger--links,.selector-list,.sel-filter,.sel-note)::before,
+#thesis .chain-explain::after{content:"";position:absolute;z-index:-1;pointer-events:none;
+  inset:calc(-1 * var(--rf-y)) calc(-1 * var(--rf-x));
+  background:rgba(var(--rf),.84);
+  -webkit-mask-image:
+    linear-gradient(to right,transparent 0,rgba(0,0,0,.08) calc(var(--rf-x) * .12),rgba(0,0,0,.35) calc(var(--rf-x) * .3),rgba(0,0,0,.75) calc(var(--rf-x) * .62),#000 var(--rf-x),#000 calc(100% - var(--rf-x)),rgba(0,0,0,.75) calc(100% - var(--rf-x) * .62),rgba(0,0,0,.35) calc(100% - var(--rf-x) * .3),rgba(0,0,0,.08) calc(100% - var(--rf-x) * .12),transparent 100%),
+    linear-gradient(to bottom,transparent 0,rgba(0,0,0,.08) calc(var(--rf-y) * .12),rgba(0,0,0,.35) calc(var(--rf-y) * .3),rgba(0,0,0,.75) calc(var(--rf-y) * .62),#000 var(--rf-y),#000 calc(100% - var(--rf-y)),rgba(0,0,0,.75) calc(100% - var(--rf-y) * .62),rgba(0,0,0,.35) calc(100% - var(--rf-y) * .3),rgba(0,0,0,.08) calc(100% - var(--rf-y) * .12),transparent 100%),
+    radial-gradient(ellipse 80% 86% at 50% 50%,#000 64%,transparent 100%);
+  mask-image:
+    linear-gradient(to right,transparent 0,rgba(0,0,0,.08) calc(var(--rf-x) * .12),rgba(0,0,0,.35) calc(var(--rf-x) * .3),rgba(0,0,0,.75) calc(var(--rf-x) * .62),#000 var(--rf-x),#000 calc(100% - var(--rf-x)),rgba(0,0,0,.75) calc(100% - var(--rf-x) * .62),rgba(0,0,0,.35) calc(100% - var(--rf-x) * .3),rgba(0,0,0,.08) calc(100% - var(--rf-x) * .12),transparent 100%),
+    linear-gradient(to bottom,transparent 0,rgba(0,0,0,.08) calc(var(--rf-y) * .12),rgba(0,0,0,.35) calc(var(--rf-y) * .3),rgba(0,0,0,.75) calc(var(--rf-y) * .62),#000 var(--rf-y),#000 calc(100% - var(--rf-y)),rgba(0,0,0,.75) calc(100% - var(--rf-y) * .62),rgba(0,0,0,.35) calc(100% - var(--rf-y) * .3),rgba(0,0,0,.08) calc(100% - var(--rf-y) * .12),transparent 100%),
+    radial-gradient(ellipse 80% 86% at 50% 50%,#000 64%,transparent 100%);
+  -webkit-mask-composite:source-in,source-in;mask-composite:intersect,intersect}
+/* The taxonomy explainer has a reserved, mostly empty zone until a stage is opened, so its capsule
+   appears with the text (an opacity change only, and only where motion is allowed). */
+#thesis .chain-explain::after{opacity:0}
+#thesis .chain-explain[data-open="true"]::after{opacity:1}
+@media (prefers-reduced-motion:no-preference){#thesis .chain-explain::after{transition:opacity 340ms var(--ease)}}
+/* retired: the section-level luminance pools, replaced by the capsules above */
+:is(#thesis,#companies,#evidence,#pac,#peer)::before{content:none}
+.sect-head{display:flex;align-items:center;gap:14px;margin-bottom:var(--space-flow)}
+.sect-idx{font-family:var(--mono);font-size:.74rem;color:var(--cold)}
+.sect-head h2{font-size:.78rem;font-weight:650;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3)}
+.sect-head::after{content:"";flex:1;height:1px;background:var(--rule)}
+.sect-lede{max-width:24ch;margin:0 0 var(--space-flow);font-size:clamp(1.5rem,3.4vw,2.8rem);font-weight:650;line-height:1.12;letter-spacing:-.022em;color:var(--ink)}
+.sect-note{max-width:62ch;margin:var(--space-flow) 0 0;font-size:.95rem;color:var(--ink-3)}
+.sect-link{display:inline-flex;align-items:center;gap:10px;margin-top:var(--space-flow);min-height:44px;font-size:.95rem;font-weight:600;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule-3)}
+.sect-link:hover{border-bottom-color:var(--cold);color:var(--ink-strong)}
+.sect-link .act-go{color:var(--cold)}
+/* Second-beat headline (declarative, not a question) + supporting paragraph +
+   taxonomy bridge line, ahead of the chain-fig spine below. 010E11: every
+   element in this run owns the gap to what follows it via its own
+   margin-bottom (--space-flow), so the whole run collapses to one uniform
+   rhythm instead of bespoke per-pair values. */
+.sect-lede--beat{max-width:none;text-transform:uppercase}
+.sect-lede--beat .lede-line{display:block}
+.sect-sub{max-width:58ch;margin:0 0 var(--space-flow);font-size:1.02rem;line-height:1.56;color:var(--ink-2)}
+.chain-bridge{max-width:54ch;margin:0;font-size:.93rem;line-height:1.6;color:var(--ink-3)}
+/* 010E13: bridge -> taxonomy entrance gap, now padding-top on a dedicated
+   wrapper — padding never collapses, so this is a guaranteed rendered gap,
+   not an arithmetic max() of two adjoining margins (010E12's approach,
+   which computed to 40px but the owner found visually insufficient).
+   This padding deliberately does NOT live on .chain-fig itself: .chain-fig
+   is position:relative and is the containing block .chain-boundary
+   (the dashed interface-column divider) positions against with top:-14px,
+   calibrated to align with the taxonomy row assuming chain-fig's own
+   padding-box top sits exactly at the row's top. Padding-top on chain-fig
+   would leave .chain-boundary anchored to the old position while the row
+   itself shifted down inside the box, breaking that alignment. Wrapping
+   chain-fig in .chain-entrance keeps chain-fig's own internal geometry
+   (and .chain-boundary's calibration) completely untouched — the whole
+   figure, boundary included, just starts lower on the page as one unit.
+   .chain-entrance is homepage-only markup (index.html/r.html); /r/thesis's
+   own chain-fig instance has no such wrapper and is unaffected. */
+.chain-entrance{padding-top:var(--space-breath)}
+/* 010F: .sect--select's old top-fade gradient was written for the previous
+   full-bleed .sect (it visually separated the companies zone from the flat
+   void background). Every section now carries its own soft radial field
+   (.sect::before, 010F2), which already does that separation job
+   consistently across all four sections — keeping the old gradient here
+   would override .sect::before's background with a companies-only one,
+   breaking "the same field grammar" across sections. Removed, no replacement
+   needed. */
+/* Peer section stays a deliberately lighter tail block, scaled down from
+   --enclosure-pad rather than reusing it outright (owner: even major
+   breaks should shrink, but this one was already the site's tightest). */
+.sect--compact{padding:clamp(24px,3.75vh,42px) clamp(20px,3.5vw,44px)}
+.sect--compact .sect-head{margin-bottom:var(--space-tight)}
+.sect--compact .sect-note{max-width:56ch;margin-top:0}
+
+/* ---------- flow: a conductor with junctions (the thesis spine) ---------- */
+.flow{position:relative;display:grid}
+.flow>li{position:relative;padding:14px 0 14px 26px}
+.flow>li::before{content:"";position:absolute;left:5px;top:0;bottom:0;width:1px;background:var(--rule-3)}
+.flow>li:first-child::before{top:25px}
+.flow>li:last-child::before{bottom:auto;height:25px}
+.flow>li::after{content:"";position:absolute;left:0;top:20px;width:11px;height:11px;border:1px solid var(--ink);background:var(--void);transition:border-color var(--t) var(--ease),box-shadow var(--t) var(--ease)}
+.flow>li[data-node="cold"]::after{border-color:var(--cold)}
+.flow>li[data-node="warm"]::after{border-color:var(--warm);background:var(--warm)}
+.flow>li[data-node="boundary"]::after{transform:rotate(45deg);border-color:var(--cold)}
+@container spine (min-width:860px){
+  .flow{grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
+  .flow>li{padding:30px 16px 0 0}
+  .flow>li::before{left:0;right:0;top:5px;bottom:auto;width:auto;height:1px}
+  .flow>li:first-child::before{left:5px;top:5px}
+  .flow>li:last-child::before{height:1px;right:22px}
+  .flow>li::after{top:0}
+}
+.chain-fig{position:relative;margin:0;container:spine/inline-size}
+.chain-k{display:block;margin-bottom:3px;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--faint-text)}
+.chain-t{display:block;font-weight:650;font-size:.98rem;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
+.chain>li[data-node="warm"] .chain-t{color:var(--warm)}
+.chain>li:is([data-node="cold"],[data-node="boundary"]) .chain-t{color:var(--cold)}
+.chain>li[data-node="boundary"]{border-top:1px dashed var(--cold-2);border-bottom:1px dashed var(--cold-2);margin:6px 0}
+.chain-boundary{display:none}
+@container spine (min-width:860px){
+  .chain>li[data-node="boundary"]{border:0;margin:0}
+  .chain-boundary{display:block;position:absolute;left:calc(400% / 7 - 14px);width:calc(100% / 7);top:-14px;bottom:-10px;border-left:1px dashed var(--cold-2);border-right:1px dashed var(--cold-2);pointer-events:none}
+}
+.chain-cap{max-width:64ch;margin:24px 0 0;font-size:.93rem;color:var(--ink-3)}
+/* ---------- /r/downloads: circuit-tree branch/terminal grammar (010D Part C) ----------
+   .flow already provides the connector-line/node markers (same technique the
+   homepage taxonomy chain uses) — this only styles the link content inside
+   each branch and its "terminal." Activation is a real semantic <a download>
+   link; the glow/line/node response is a plain CSS transition on real
+   hover/focus/active state, never a fake transfer-progress indicator. */
+.dl-list{margin-top:8px}
+.dl-branch{display:block;padding:4px 8px 8px 4px;margin:-4px -8px -8px -4px;text-decoration:none;color:inherit;border-radius:4px;transition:background-color var(--t-fast) var(--ease)}
+.dl-branch:hover,.dl-branch:focus-visible{background:var(--panel-2)}
+.dl-branch:focus-visible{outline:2px solid var(--cold-2);outline-offset:2px}
+.dl-title{display:flex;align-items:baseline;gap:10px;font-weight:650;font-size:1.02rem;color:var(--ink)}
+.dl-format{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--faint-text);border:1px solid var(--rule-2);border-radius:3px;padding:1px 5px}
+.dl-desc{display:block;margin-top:3px;max-width:60ch;font-size:.93rem;color:var(--ink-2)}
+.dl-meta{display:block;margin-top:3px;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:var(--faint-text)}
+.dl-terminal{position:relative;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;margin-top:9px;
+  border:1px solid var(--rule-3);border-radius:50%;color:var(--ink-2);font-size:.9rem;
+  transition:border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)}
+.dl-branch:hover .dl-terminal,.dl-branch:focus-visible .dl-terminal{border-color:var(--cold);color:var(--cold);transform:translateY(2px)}
+.dl-glare{position:absolute;inset:-6px;border-radius:50%;background:radial-gradient(circle,var(--cold-glow),transparent 70%);opacity:0;transition:opacity 200ms var(--ease)}
+.dl-branch:hover .dl-glare,.dl-branch:focus-visible .dl-glare{opacity:1}
+.flow.dl-list>li::before{transition:background-color var(--t) var(--ease)}
+.flow.dl-list>li:has(.dl-branch:hover)::before,.flow.dl-list>li:has(.dl-branch:focus-visible)::before{background:var(--cold-2)}
+.flow.dl-list>li:has(.dl-branch:hover)::after,.flow.dl-list>li:has(.dl-branch:focus-visible)::after{border-color:var(--cold);box-shadow:0 0 0 3px var(--guide)}
+@media (prefers-reduced-motion:reduce){.dl-terminal{transform:none!important}}
+/* ---------- interactive taxonomy micro-explainer (010E) ----------
+   Real <button> elements (semantic, natively Tab/Enter/Space-accessible)
+   wrapping the chain-k/chain-t spans that already existed — no new visual
+   language, no non-semantic clickable spans. Only one .chain-explain
+   panel exists in the DOM; JS swaps its text and toggles data-open, so
+   desktop and mobile read the exact same source string, never a
+   duplicated copy. "Circuit response" reuses the substrate's own
+   existing z-<stage> group classes and --geo-glow token via a single
+   data-flash attribute JS sets on .substrate and clears after ~900ms —
+   deliberately NOT fighting the packets'/pulses' own already-running
+   infinite animations (this only raises the GROUP's opacity ceiling,
+   which cascades multiplicatively over whatever those children are
+   already doing, rather than overriding their own opacity property). */
+.chain-btn{display:block;width:100%;padding:0;margin:0;background:none;border:0;font:inherit;text-align:left;color:inherit;cursor:pointer}
+.chain-btn:focus-visible{outline:2px solid var(--cold-2);outline-offset:4px;border-radius:2px}
+.chain>li:has(.chain-btn:hover) .chain-t,.chain>li:has(.chain-btn:focus-visible) .chain-t{filter:brightness(1.12)}
+.chain>li:has(.chain-btn:hover)::after,.chain>li:has(.chain-btn:focus-visible)::after{box-shadow:0 0 0 3px var(--guide)}
+.chain-btn[aria-expanded="true"] .chain-t{filter:brightness(1.22)}
+.chain>li:has(.chain-btn[aria-expanded="true"])::after{box-shadow:0 0 0 4px var(--guide);border-color:var(--ink-strong)}
+.chain>li[data-node="warm"]:has(.chain-btn[aria-expanded="true"])::after{border-color:var(--warm)}
+.chain>li:is([data-node="cold"],[data-node="boundary"]):has(.chain-btn[aria-expanded="true"])::after{border-color:var(--cold)}
+@keyframes chain-pop{0%{transform:scale(1) translateY(0)}45%{transform:scale(1.07) translateY(-1px)}75%{transform:scale(.99) translateY(0)}100%{transform:scale(1) translateY(0)}}
+/* Circuit response: JS sets .substrate[data-flash="<stage>"] briefly (see
+   site.js) and clears it after ~900ms. Raises that one z-<stage> GROUP's
+   opacity ceiling and adds the existing --geo-glow token — it does not
+   touch any child's own opacity property, so it layers over whatever the
+   packets/pulses inside are already doing rather than fighting their
+   infinite animations. */
+.substrate[data-flash="signal"] .z-signal,
+.substrate[data-flash="transformation"] .z-transform,
+.substrate[data-flash="routing"] .z-route,
+.substrate[data-flash="control"] .z-control,
+.substrate[data-flash="interface"] .z-interface,
+.substrate[data-flash="feedback"] .z-feedback,
+.substrate[data-flash="consequence"] .z-consequence,
+.substrate[data-flash] .z-active{opacity:.95;filter:var(--geo-glow);transition:opacity 150ms var(--ease),filter 150ms var(--ease)}
+.chain-explain{position:relative;margin-top:22px;max-width:56ch;min-height:96px;pointer-events:none}
+.chain-explain::before{content:"";display:block;width:28px;height:1px;margin-bottom:10px;background:var(--cold-2);
+  opacity:0;transition:opacity 220ms var(--ease)}
+.chain-explain-body{margin:0;font-size:.93rem;line-height:1.6;color:var(--ink-2);
+  opacity:0;transform:translateY(-6px);transition:opacity 220ms var(--ease),transform 220ms var(--ease)}
+.chain-explain[data-open="true"]{pointer-events:auto}
+.chain-explain[data-open="true"]::before{opacity:1;transition:opacity 340ms var(--ease)}
+.chain-explain[data-open="true"] .chain-explain-body{opacity:1;transform:translateY(0);
+  transition:opacity 340ms var(--ease),transform 340ms var(--ease)}
+/* Decorative text-based schematic (owner-authorized homepage repair, post-010E):
+   compact stage vocabulary + a diagnostic question under each chain-btn label,
+   the feedback stage marked as a return path rather than another forward box,
+   and a closing line after the whole spine.
+   010E7: this subtext is hidden until its own stage is activated, so the
+   closed schematic reads as seven clean labels, not a dense annotated list.
+   .chain-reveal collapses via grid-template-rows (0fr -> 1fr), which animates
+   to the content's real height with no hardcoded max-height and no JS beyond
+   the aria-expanded toggle 010E's own click handler already sets. */
+.chain-reveal{display:grid;grid-template-rows:0fr;transition:grid-template-rows 240ms var(--ease)}
+.chain-reveal-inner{overflow:hidden;min-height:0;opacity:0;transform:translateY(-4px);transition:opacity 200ms var(--ease),transform 200ms var(--ease)}
+.chain>li:has(.chain-btn[aria-expanded="true"]) .chain-reveal{grid-template-rows:1fr}
+.chain>li:has(.chain-btn[aria-expanded="true"]) .chain-reveal-inner{opacity:1;transform:translateY(0);transition-delay:60ms}
+/* 010E8: microcopy lifted one size step and off the low-contrast --faint-text
+   token — --ink-3/--ink-2 read as "technical annotation" against --void
+   without approaching the stage name's own --ink/weight-650 dominance. */
+.chain-vocab{margin:8px 0 0;font-family:var(--mono);font-size:.74rem;letter-spacing:.03em;line-height:1.5;color:var(--ink-3)}
+.chain-q{margin:4px 0 0;font-size:.8rem;font-style:italic;line-height:1.45;color:var(--ink-2)}
+.chain-return{display:inline-flex;align-items:center;gap:5px;margin:8px 0 0;font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--cold)}
+.chain-return span{font-size:1.3em}
+/* 010E11: chain-closing owns both the "taxonomy -> closing line" and
+   "closing line -> trajectory" gaps via --space-flow on both sides. It
+   carries this alone rather than touching .chain-fig/.seq/.seq-cap, which
+   are shared with /r/thesis and /r/research/pac and out of this
+   homepage-only pass; margins between normal-flow siblings collapse, so
+   this alone yields a uniform --space-flow gap on both edges. */
+.chain-closing{max-width:56ch;margin:var(--space-flow) 0;font-size:.93rem;line-height:1.6;color:var(--ink-3)}
+.seq{display:flex;flex-wrap:wrap;align-items:center;gap:4px 0;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.seq li{display:flex;align-items:center}
+.seq li::after{content:"";width:16px;height:1px;margin:0 9px;background:var(--rule-3)}
+.seq li:last-child::after{display:none}
+.seq li:last-child{color:var(--cold)}
+.seq-cap{margin:0 0 10px;font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint-text)}
+.stmt{margin:clamp(28px,4vw,44px) 0 0;font-size:clamp(1.05rem,1.8vw,1.35rem);font-weight:700;line-height:1.35;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
+.stmt span{display:block}
+.stmt span:last-child{color:var(--cold)}
+/* 008L, Part 1-5: one signal filament through REALITY. ::before is
+   positioned relative to the word's OWN generated box (position:relative
+   on .stmt-key itself), not an estimated pixel offset against the whole
+   .stmt block — so it stays exactly centered on the word regardless of
+   viewport width or how "Reality stays hard." wraps. Absolute positioning
+   means it can never shift the text layout; text foreground still paints
+   over it because ::before is generated before the element's own text in
+   paint order (no z-index needed). Content is the real ASCII for REALITY,
+   doubled for the same translateY(-50%) loop the two binary fields use;
+   verified in the 008L report. Sits above the negative-space substrate
+   behind it (z-index:0) and below the word itself — the requested
+   three-layer stack. */
+.stmt-key{position:relative;display:inline-block}
+.stmt-key::before{
+  content:"01010010 01000101 01000001 01001100 01001001 01010100 01011001   01010010 01000101 01000001 01001100 01001001 01010100 01011001";
+  position:absolute;left:50%;top:-3.2em;bottom:-3.2em;display:block;
+  transform:translateX(-50%);
+  writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap;
+  font-family:var(--mono);font-size:.62em;font-weight:400;line-height:1.4;letter-spacing:.02em;
+  color:var(--cold);opacity:.2;
+  overflow:hidden;pointer-events:none;
+  filter:var(--geo-glow);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 18%,#000 82%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 18%,#000 82%,transparent 100%)}
+@media (max-width:719px){.stmt-key::before{opacity:.16}}
+@media (prefers-reduced-motion:reduce){.stmt-key::before{opacity:.16}}
+
+/* ---------- company selector ---------- */
+.selector-list{border-top:1px solid var(--rule-2)}
+.selector-list li{border-bottom:1px solid var(--rule)}
+.selector-list a{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;align-items:baseline;padding:15px 10px 15px 0;color:var(--ink);text-decoration:none;transition:background-color var(--t-fast) var(--ease)}
+@media (min-width:760px){.selector-list a{grid-template-columns:minmax(0,1fr) 13rem auto;padding-left:14px}}
+.selector-list a::before{content:"";position:absolute;left:0;top:-1px;bottom:-1px;width:2px;background:transparent;transition:background-color var(--t-fast) var(--ease)}
+.selector-list a:hover{background:var(--panel)}
+.selector-list a:hover::before,.selector-list li.is-context a::before{background:var(--cold)}
+.sel-name{font-size:clamp(1rem,1.6vw,1.15rem);font-weight:650;letter-spacing:-.005em}
+.sel-state{display:inline-flex;align-items:center;gap:8px;grid-column:1/-1;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint-text)}
+@media (min-width:760px){.sel-state{grid-column:auto}}
+.sel-state::before{content:"";flex:none;width:7px;height:7px;border:1px solid var(--faint-text)}
+[data-dossier="real"] .sel-state{color:var(--ink-2)}
+[data-dossier="real"] .sel-state::before{background:var(--ink-2);border-color:var(--ink-2)}
+[data-dossier="draft"] .sel-state{color:var(--ink-2)}
+[data-dossier="draft"] .sel-state::before{border-style:dotted;border-color:var(--ink-2)}
+[data-dossier="pending"] .sel-state::before{border-style:dashed}
+[data-dossier="general"] .sel-state::before{border-radius:50%}
+.sel-go{display:none;font-family:var(--mono);color:var(--faint-text);transition:transform var(--t) var(--ease),color var(--t-fast) var(--ease)}
+@media (min-width:760px){.sel-go{display:block}}
+.selector-list a:hover .sel-go{transform:translateX(4px);color:var(--cold)}
+.sel-filter{display:flex;align-items:center;gap:12px;margin:0 0 14px;max-width:420px}
+.sel-filter label{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint-text)}
+.sel-filter input{flex:1;min-width:0;height:44px;padding:0 12px;border:1px solid var(--rule-3);border-radius:4px;background:var(--panel);color:var(--ink);font:inherit;font-size:1rem}
+.sel-filter input:focus-visible{outline-offset:1px}
+.sel-empty{margin:14px 0 0;font-size:.95rem;color:var(--ink-3)}
+.sel-note{max-width:62ch;margin:22px 0 0;font-size:.97rem;color:var(--ink-2)}
+
+/* ================= INSPECTION — the engineering interface inside /r ================= */
+[data-mode="inspection"]{background:var(--field)}
+.app{display:grid;grid-template-columns:minmax(0,1fr);width:100%;max-width:1520px;margin:0 auto;padding:0 var(--gutter)}
+.rail,.toc{display:none}
+@media (min-width:900px){
+  .app{grid-template-columns:216px minmax(0,1fr);gap:clamp(24px,3vw,44px)}
+  [data-mode="inspection"] .menu{display:none}
+  .rail{display:block;position:sticky;top:var(--topbar-h);align-self:start;max-height:calc(100svh - var(--topbar-h));overflow-y:auto;padding:26px 16px 32px 0;border-right:1px solid var(--rule)}
+}
+@media (min-width:1280px){
+  .app{grid-template-columns:216px minmax(0,1fr) 190px}
+  .toc{display:block;position:sticky;top:var(--topbar-h);align-self:start;max-height:calc(100svh - var(--topbar-h));overflow-y:auto;padding:34px 0 34px 16px;border-left:1px solid var(--rule)}
+}
+.rail-title{margin:0 0 12px;font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cold)}
+.rail-foot{margin:26px 0 0 18px;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:var(--faint-text)}
+.toc-cap{margin:0 0 10px;font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint-text)}
+.toc a{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;padding:6px 0 6px 12px;border-left:1px solid var(--rule-2);color:var(--faint-text);text-decoration:none;font-size:.84rem;line-height:1.45;transition:color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)}
+.toc a:hover,.toc a.is-active{color:var(--ink);border-left-color:var(--cold)}
+.toc-k{font-family:var(--mono);font-size:.66rem;color:var(--faint-text)}
+
+/* ---------- document sheet ---------- */
+.doc{min-width:0;padding:26px 0 64px}
+.sheet{position:relative;border:1px solid var(--rule-2);background:var(--panel)}
+.sheet::before,.sheet::after{content:"";position:absolute;width:12px;height:12px;pointer-events:none;opacity:.7}
+.sheet::before{left:-1px;top:-1px;border-left:1px solid var(--cold-2);border-top:1px solid var(--cold-2)}
+.sheet::after{right:-1px;bottom:-1px;border-right:1px solid var(--cold-2);border-bottom:1px solid var(--cold-2)}
+.doc-head{padding:clamp(24px,3.6vw,44px) clamp(20px,3.6vw,44px)}
+.doc-kicker{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 16px;font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint-text)}
+.doc-kicker .k{color:var(--cold)}
+.doc-kicker .sep{color:var(--rule-3)}
+.doc h1{font-size:clamp(1.95rem,4.2vw,3.3rem);font-weight:720;line-height:1.04;letter-spacing:-.03em;color:var(--ink-strong)}
+.doc-lede{max-width:60ch;margin:18px 0 0;font-size:clamp(1rem,1.4vw,1.14rem);line-height:1.55;color:var(--ink-2)}
+.titleblock{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:26px 0 0;border-top:1px solid var(--rule-2);border-left:1px solid var(--rule-2)}
+@media (max-width:759px){.titleblock>div:first-child{grid-column:1/-1}}
+@media (min-width:760px){.titleblock{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.titleblock>div{padding:10px 12px;border-right:1px solid var(--rule-2);border-bottom:1px solid var(--rule-2);min-width:0}
+.titleblock dt{margin:0 0 4px;font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint-text)}
+.titleblock dd{margin:0;font-family:var(--mono);font-size:.8rem;color:var(--ink-2);overflow-wrap:anywhere}
+.share{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:16px 0 0;font-family:var(--mono);font-size:.76rem;color:var(--ink-3)}
+.share-k{font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint-text)}
+.share-url{min-width:0;overflow-wrap:anywhere;color:var(--ink-2);user-select:all}
+.share-copy{height:32px;padding:0 12px;border:1px solid var(--rule-3);border-radius:4px;background:var(--panel-2);color:var(--ink);font:inherit;font-size:.76rem;cursor:pointer;transition:border-color var(--t-fast) var(--ease)}
+.share-copy:hover{border-color:var(--cold)}
+.share-status{color:var(--cold)}
+.block{padding:clamp(24px,3.4vw,40px) clamp(20px,3.6vw,44px);border-top:1px solid var(--rule)}
+.block h2{display:flex;align-items:baseline;gap:14px;margin:0 0 16px;font-size:1.1rem;font-weight:650;letter-spacing:-.012em;color:var(--ink-strong)}
+.h-idx{font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.06em;color:var(--cold)}
+.block p{max-width:66ch;color:var(--ink-2)}
+.block>*:last-child{margin-bottom:0}
+.block-note{max-width:62ch;font-size:.93rem;color:var(--ink-3)}
+.bound{padding:14px 18px;border:1px solid var(--rule-2);border-left:2px solid var(--ink-2)}
+.bound p{margin:0;font-size:.97rem}
+
+/* ---------- ledger rows ---------- */
+.ledger{border-top:1px solid var(--rule-2)}
+.ledger>li{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:6px 24px;padding:15px 0;border-bottom:1px solid var(--rule)}
+@media (min-width:780px){.ledger>li{grid-template-columns:minmax(150px,12rem) minmax(0,1fr) auto;align-items:start}}
+.ledger>li::before{content:"";position:absolute;left:calc(-1 * clamp(20px,3.6vw,44px));top:-1px;bottom:-1px;width:2px;background:transparent;transition:background-color var(--t-fast) var(--ease)}
+.ledger>li:hover::before{background:var(--cold)}
+.ledger-k{font-weight:650;color:var(--ink)}
+.ledger-v{color:var(--ink-2);font-size:.97rem}
+.ledger .state{justify-self:start}
+.ledger--links>li{display:block;padding:0}
+.ledger--links a{display:grid;grid-template-columns:minmax(0,1fr);gap:4px 24px;padding:15px 8px 15px 0;text-decoration:none;color:inherit}
+@media (min-width:780px){.ledger--links a{grid-template-columns:minmax(150px,12rem) minmax(0,1fr) auto;align-items:start}}
+.ledger--links a:hover{background:var(--panel-2)}
+.ledger--links a:hover .ledger-k{color:var(--ink-strong)}
+.sect .ledger>li::before{left:-14px}
+.ledger-note{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint-text);white-space:nowrap}
+
+/* ---------- progressive disclosure: DETAIL / SHOW EVIDENCE / TRACE ---------- */
+.trace{margin-top:14px;border-top:1px solid var(--rule)}
+.trace>summary{position:relative;display:inline-flex;align-items:center;gap:10px;min-height:40px;padding:6px 0;list-style:none;cursor:pointer;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.trace>summary::-webkit-details-marker{display:none}
+.trace>summary::marker{content:""}
+.trace>summary::before{content:"";width:9px;height:9px;border:1px solid var(--cold-2);transition:transform var(--t) var(--ease),background-color var(--t) var(--ease)}
+.trace[open]>summary::before{transform:rotate(45deg);background:var(--cold-2)}
+.trace>summary:hover{color:var(--ink)}
+.trace-body{position:relative;padding:4px 0 8px 22px}
+.trace-body::before{content:"";position:absolute;left:4px;top:0;bottom:10px;width:1px;background:var(--cold-2)}
+.trace-body p{max-width:66ch;font-size:.97rem}
+.trace-legend{display:grid;gap:8px;margin:0}
+.trace-legend div{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-items:center}
+.trace-legend dd{margin:0;font-size:.92rem;color:var(--ink-3)}
+
+/* ---------- citations: claim [source] -> compact evidence drawer ---------- */
+.src-ref{font-family:var(--mono);font-size:.82em;color:var(--faint-text);text-decoration:none;white-space:nowrap}
+.src-ref:hover{color:var(--cold)}
+.src-drawer{margin-top:18px}
+.src-list{display:grid;gap:16px}
+.src-card{padding:14px 16px;border:1px solid var(--rule-2);scroll-margin-top:calc(var(--topbar-h) + 16px);transition:background-color var(--t) var(--ease),box-shadow var(--t) var(--ease)}
+.src-card:target{background:var(--panel-2);box-shadow:inset 2px 0 0 var(--cold)}
+.src-title{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin:0 0 6px;font-weight:650;color:var(--ink)}
+.src-year{font-family:var(--mono);font-size:.86em;color:var(--faint-text)}
+.src-org{margin:0 0 10px;font-size:.93rem;color:var(--ink-2)}
+.src-tag{margin-right:6px;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint-text)}
+.src-why,.src-supports{margin:0 0 6px;font-size:.93rem;color:var(--ink-2)}
+.src-open{margin:8px 0 0}
+.src-open a{font-size:.9rem;font-weight:600}
+
+/* ---------- PAC: authority kept distinct from safety ---------- */
+.triad{display:grid;border-top:1px solid var(--rule-2)}
+@media (min-width:820px){.triad{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.triad>li{padding:18px 20px 18px 0;border-bottom:1px solid var(--rule)}
+@media (min-width:820px){.triad>li{padding:20px;border-bottom:0;border-right:1px dashed var(--rule-3)}.triad>li:last-child{border-right:0}}
+.triad>li[data-concern="authority"]{background:var(--panel-2);box-shadow:inset 2px 0 0 var(--cold)}
+.triad-k{display:block;margin-bottom:8px;font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint-text)}
+.triad>li[data-concern="authority"] .triad-k{color:var(--cold)}
+.triad-t{display:block;margin-bottom:6px;font-weight:650;color:var(--ink)}
+.triad-d{display:block;font-size:.93rem;color:var(--ink-3)}
+.nolist{border-top:1px solid var(--rule-2)}
+.nolist li{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--rule);color:var(--ink-2);font-size:.97rem}
+.nolist li::before{content:"";flex:none;width:10px;height:10px;margin-top:.45em;border:1px solid var(--rule-3);background:linear-gradient(45deg,transparent 44%,var(--faint-text) 44% 56%,transparent 56%)}
+
+/* ---------- long text: letters and the thesis draft ---------- */
+.prose{max-width:66ch}
+.prose p{color:var(--ink-2);font-size:1.02rem;line-height:1.7}
+.prose h3{margin:1.8em 0 .7em;font-size:1rem;font-weight:650;letter-spacing:.02em;color:var(--ink)}
+.letter{padding:clamp(18px,3vw,32px);border:1px solid var(--rule-2);background:var(--field)}
+.letter p:last-child{margin-bottom:0}
+.letter .sign{margin-top:1.6em;color:var(--ink)}
+
+/* ---------- job entries: role / employer / location·dates, then bullets ---------- */
+.jobs{margin-top:14px;border-top:1px solid var(--rule-2)}
+.job{padding:20px 0;border-bottom:1px solid var(--rule)}
+.job-head{display:grid;gap:2px}
+.job-role{margin:0;font-size:1.02rem;font-weight:700;color:var(--ink-strong)}
+.job-org{margin:0;font-size:.95rem;font-weight:600;color:var(--ink-2)}
+.job-meta{margin:3px 0 0;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;color:var(--faint-text)}
+.job-list{margin:14px 0 0;display:grid;gap:9px}
+.job-list li{position:relative;padding-left:20px;max-width:64ch;font-size:.96rem;line-height:1.6;color:var(--ink-2)}
+.job-list li::before{content:"";position:absolute;left:0;top:.6em;width:6px;height:6px;border:1px solid var(--rule-3)}
+
+/* ---------- footer: contact, general material, signal ---------- */
+.foot{position:relative;z-index:1;flex:none;padding:44px max(var(--gutter),calc((100% - var(--measure))/2)) 32px;border-top:1px solid var(--rule);background:var(--void);scroll-margin-top:var(--topbar-h)}
+.foot:focus{outline:none}
+.foot:target .foot-contact{box-shadow:inset 2px 0 0 var(--cold)}
+.foot-inner{display:grid;gap:32px}
+@media (min-width:860px){.foot-inner{grid-template-columns:1.4fr 1fr 1fr}}
+.foot-contact{padding-left:14px}
+.foot-cap{margin:0 0 12px;font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint-text)}
+.contact-line{margin:0 0 6px;font-size:1.05rem}
+.contact-line a{color:var(--ink-strong)}
+.contact-pending{max-width:44ch;margin:0 0 10px;padding:10px 12px;border:1px dashed var(--rule-3);font-size:.93rem;color:var(--ink-3)}
+.contact-pending .pending-k{display:block;margin-bottom:4px}
+.contact-pending .pending-k::before{display:none}
+.foot-line{max-width:44ch;margin:0;font-size:.92rem;color:var(--ink-3)}
+.foot-nav{display:flex;flex-direction:column;align-items:flex-start}
+.foot-nav a{display:inline-flex;align-items:center;min-height:36px;font-size:.93rem;color:var(--ink-2);text-decoration:none}
+.foot-nav a:hover,.foot-nav a[aria-current]{color:var(--ink)}
+.fb{margin:0 0 14px;font-size:.93rem;color:var(--ink-3)}
+.fb-link{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border:1px solid var(--rule-3);border-radius:4px;font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none}
+.fb-link:hover{border-color:var(--cold)}
+.fb-k{display:block;font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.build{margin:0;font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--faint-text);overflow-wrap:anywhere}
+.build-k{text-transform:uppercase;letter-spacing:.12em}
+
+/* ---------- command palette ---------- */
+.palette{width:min(640px,calc(100vw - 24px));max-height:min(64svh,540px);margin:12vh auto auto;padding:0;border:1px solid var(--rule-3);border-radius:10px;background:var(--panel);color:var(--ink);box-shadow:0 26px 80px rgba(0,0,0,.66)}
+.palette::backdrop{background:rgba(5,8,6,.62)}
+.palette[open]{display:flex;flex-direction:column}
+.pal-head{display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--rule-2)}
+.pal-head::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--cold)}
+.pal-input{flex:1;min-width:0;height:50px;border:0;background:none;color:var(--ink);font:inherit;font-size:1rem;outline:none}
+.pal-input::placeholder{color:var(--faint-text)}
+.pal-esc{padding:2px 7px;border:1px solid var(--rule-2);border-radius:4px;font-family:var(--mono);font-size:.68rem;color:var(--faint-text)}
+.pal-list{overflow-y:auto;padding:8px}
+.pal-group{margin:0;padding:10px 10px 4px;font-family:var(--mono);font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint-text)}
+.pal-opt{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:6px;color:var(--ink-2);cursor:pointer}
+.pal-opt[aria-selected="true"]{background:var(--panel-2);color:var(--ink-strong);box-shadow:inset 2px 0 0 var(--cold)}
+.pal-opt-k{min-width:2.2em;font-family:var(--mono);font-size:.68rem;color:var(--faint-text)}
+.pal-opt-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pal-opt-path{margin-left:auto;padding-left:12px;font-family:var(--mono);font-size:.68rem;color:var(--faint-text)}
+.pal-empty{margin:0;padding:16px 10px;font-size:.93rem;color:var(--faint-text)}
+.pal-foot{display:flex;gap:16px;padding:8px 14px;border-top:1px solid var(--rule-2);font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--faint-text)}
+
+/* ---------- signal stripes: structured binary substrate, decorative only ----------
+   Not readable content (aria-hidden, no text-contrast requirement — see --stripe-rgb).
+   Right stream (008D, B9 — the "008C" this referenced was never actually
+   built; this is that structured version). Left stream added 2026-09-18
+   (008F) as a second, smaller, non-mirrored instance of the exact same
+   .signal-stripe/.signal-col component — .signal-stripe--left is the only
+   new selector; everything else (typography, primary/secondary alpha
+   split, vertical mask, translateY loop, animation keyframe) is reused
+   verbatim, per "shared component, different modifier."
+   Vocabulary is now a clean, non-overlapping split of the same 14 words
+   across the two streams — real 8-bit ASCII, space between bytes, wider
+   gap between words, verified by decoding every byte back to its source
+   character:
+     right (9 lanes, 3 groups, data-lane="transform|authority|decision")
+       TRANSFORMATION/INTERFACE/CONSEQUENCE, AUTHORITY/SAFETY/EXECUTION,
+       PERMIT/DENY
+     left (6 lanes, 2 groups, data-lane="signal-route|feedback-evd")
+       SIGNAL/ROUTING/CONTROL, FEEDBACK/EVIDENCE/DEFER
+   Different lane counts, durations, delays, and opacity between the two —
+   deliberately not synchronized twins. Same primary/secondary depth
+   mechanism: the first lane of each group is .signal-col--primary
+   (brighter alpha); the others are the same group's text rotated by a
+   whole number of bytes (never split mid-byte) so lanes in a group aren't
+   visibly identical. Each lane is doubled (X + "   " + X) and
+   translateY(-50%), bottom-to-top, seamless. Structural CSS applies
+   always; the animation is declared only under
+   prefers-reduced-motion:no-preference below, so reduced-motion users get
+   a genuinely static frame. The left stream's width is
+   calc(var(--gutter) * .82) — 82% of the page's own actual content gutter
+   (008F1: raised from .7, still <1, so it is still mathematically
+   narrower than the space that already exists before real content or the
+   inspection-mode .rail begins, at every breakpoint, by construction).
+   008F1 (owner visual review: "barely visible") also gave the left stream
+   its own, gentler edge mask and its own brighter glyph alpha — the
+   shared .signal-stripe-fade mask's 38%/62% fade was tuned for the right
+   stream's 12vw width; against the left stream's ~30-45px width that same
+   *percentage* fade was eating nearly the whole column, leaving almost no
+   fully-opaque glyph strip. .signal-stripe--left now overrides the mask
+   (15%/85%) and the glyph alpha (both tiers, scoped to
+   .signal-stripe--left .signal-col / --primary, so the shared base rule
+   and the right stream stay byte-for-byte as they were) — same
+   --stripe-rgb hue family throughout, this is an alpha/mask change only,
+   never a hue change. */
+.signal-stripe{--stripe-rgb:120,169,122;position:fixed;top:0;right:14vw;width:12vw;height:100svh;z-index:0;
+  pointer-events:none;overflow:hidden;opacity:.22;filter:blur(.4px);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 6%,#000 94%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 6%,#000 94%,transparent 100%);
+  transition:opacity var(--t) var(--ease)}
+.signal-stripe--left{right:auto;left:0;width:calc(var(--gutter) * .82)}
+[data-mode="inspection"] .signal-stripe{opacity:.13;filter:blur(1.1px)}
+[data-mode="inspection"] .signal-stripe--left{opacity:.16}
+body:has(.bus a:is(:hover,:focus-visible)) .signal-stripe{opacity:.29}
+body:has(.bus a:is(:hover,:focus-visible)) .signal-stripe--left{opacity:.3}
+[data-mode="inspection"] body:has(.bus a:is(:hover,:focus-visible)) .signal-stripe{opacity:.18}
+[data-mode="inspection"] body:has(.bus a:is(:hover,:focus-visible)) .signal-stripe--left{opacity:.21}
+.signal-stripe--left{opacity:.23}
+.signal-stripe-fade{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:flex-start;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 38%,#000 62%,transparent 100%);
+  mask-image:linear-gradient(to right,transparent 0,#000 38%,#000 62%,transparent 100%)}
+.signal-stripe--left .signal-stripe-fade{
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 15%,#000 85%,transparent 100%);
+  mask-image:linear-gradient(to right,transparent 0,#000 15%,#000 85%,transparent 100%)}
+.signal-col{display:block;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap;
+  font-family:var(--mono);font-size:14px;line-height:1.55;letter-spacing:.03em;
+  color:rgba(var(--stripe-rgb),.42)}
+.signal-col--primary{color:rgba(var(--stripe-rgb),.68);font-weight:600}
+.signal-stripe--left .signal-col{color:rgba(var(--stripe-rgb),.52)}
+.signal-stripe--left .signal-col--primary{color:rgba(var(--stripe-rgb),.8)}
+@media (max-width:719px){
+  .signal-stripe{right:-4vw;width:16vw;opacity:.13}
+  [data-mode="inspection"] .signal-stripe{opacity:.08}
+  .signal-col:nth-child(n+7){display:none}
+  .signal-stripe--left{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .signal-stripe{opacity:.09}
+  [data-mode="inspection"] .signal-stripe{opacity:.07}
+  .signal-stripe--left{opacity:.11}
+  [data-mode="inspection"] .signal-stripe--left{opacity:.09}
+}
+/* ---------- peripheral trace: one column, tertiary to both binary fields ----------
+   008J, Part 10-16. Not a third field — a single .signal-col reused as-is
+   (same font/color/animation as every other lane), in its own tiny
+   container anchored at the true right edge (right:0), entirely outside
+   even where the right field itself begins (right:14vw) — the two never
+   touch. No horizontal mask: a single glyph column has no inner edges to
+   blend, per "do not reuse an aggressive lateral fade." Vertical
+   dissolution only, reused verbatim from .signal-stripe. */
+.signal-trace{position:fixed;top:0;right:0;width:20px;height:100svh;z-index:0;
+  pointer-events:none;overflow:hidden;opacity:.15;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 6%,#000 94%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 6%,#000 94%,transparent 100%);
+  transition:opacity var(--t) var(--ease)}
+[data-mode="inspection"] .signal-trace{opacity:.1}
+@media (max-width:719px){.signal-trace{display:none}}
+@media (prefers-reduced-motion:reduce){
+  .signal-trace{opacity:.08}
+  [data-mode="inspection"] .signal-trace{opacity:.06}
+}
+
+/* ---------- background inertia: discrete depth response, no scroll loop ----------
+   008K, Part C/17. site.js already flips .substrate[data-zone] via a single
+   IntersectionObserver as the visitor scrolls the homepage (added long
+   before this pass, reused verbatim here) — nothing new listens to scroll.
+   :has() lets these sibling decorative layers react to that same
+   already-existing state at three depth tiers (far/mid/near), each a
+   small FIXED transform per zone, not a value proportional to scroll
+   position — a discrete state response, never a per-frame calculation.
+   transform is the only property touched, so it stays compositor-only.
+   Homepage-only: inspection pages have no data-zone system to key off. */
+.substrate,.bubbles,.signal-stripe,.signal-trace{transition:transform 600ms var(--ease)}
+body:has(.substrate[data-zone="thesis"]) .substrate{transform:translateY(-4px)}
+body:has(.substrate[data-zone="company"]) .substrate{transform:translateY(-8px)}
+body:has(.substrate[data-zone="evidence"]) .substrate{transform:translateY(-11px)}
+body:has(.substrate[data-zone="peer"]) .substrate{transform:translateY(-12px)}
+body:has(.substrate[data-zone="thesis"]) .bubbles{transform:translateY(-2px)}
+body:has(.substrate[data-zone="company"]) .bubbles{transform:translateY(-3px)}
+body:has(.substrate[data-zone="evidence"]) .bubbles,
+body:has(.substrate[data-zone="peer"]) .bubbles{transform:translateY(-4px)}
+body:has(.substrate[data-zone="thesis"]) :is(.signal-stripe,.signal-trace){transform:translateY(-3px)}
+body:has(.substrate[data-zone="company"]) :is(.signal-stripe,.signal-trace){transform:translateY(-5px)}
+body:has(.substrate[data-zone="evidence"]) :is(.signal-stripe,.signal-trace){transform:translateY(-7px)}
+body:has(.substrate[data-zone="peer"]) :is(.signal-stripe,.signal-trace){transform:translateY(-8px)}
+@media (prefers-reduced-motion:reduce){
+  .substrate,.bubbles,.signal-stripe,.signal-trace{transform:none!important}
+}
+
+/* ---------- reading-zone depth reveal: settle into focus, once ----------
+   008K, Part D. Progressive enhancement only: the [data-reveal="pending"]
+   attribute is added by site.js, only when IntersectionObserver exists and
+   reduced-motion is off — without JS, or under reduced motion, every
+   target below simply has no such attribute and renders in its normal,
+   final position, so no meaning ever depends on this. Heading-tier
+   (h2/.sect-head/.sect-lede) gets the stronger arrival per Part 24; body-
+   tier (.prose/.doc-lede/.triad/.chain-fig) is lighter and transitions
+   ~60ms later — since headings sit above their own body copy in scroll
+   order, they also cross the observer's rootMargin boundary first, so the
+   stagger is mostly free (from geometry), the transition-delay is just
+   insurance for a fast scroll where both cross in the same frame.
+   site.js unobserves each element after its first reveal, so this never
+   replays on a scroll reversal. */
+h2,.sect-head,.sect-lede,.prose,.doc-lede,.triad,.chain-fig{
+  transition:opacity 340ms var(--ease),transform 340ms var(--ease)}
+h2[data-reveal="pending"],.sect-head[data-reveal="pending"],.sect-lede[data-reveal="pending"]{
+  opacity:.88;transform:translateY(10px) scale(.988)}
+/* Part F page intensity: reading-heavy pages (resume/open-letter/company —
+   plain [data-mode="inspection"], no data-bubbles="rich") get only a
+   near-invisible opacity nudge on body-tier content, no transform, per the
+   0-15% ceiling. /r and the two data-bubbles="rich" pages (thesis, pac)
+   get the fuller opacity+transform arrival — the same attributes 008J
+   already uses for bubble density, reused here rather than adding a new
+   per-page marker. */
+.prose[data-reveal="pending"],.doc-lede[data-reveal="pending"],
+.triad[data-reveal="pending"],.chain-fig[data-reveal="pending"]{
+  opacity:.95;transition-delay:60ms}
+[data-mode="discovery"] .prose[data-reveal="pending"],[data-mode="discovery"] .doc-lede[data-reveal="pending"],
+[data-mode="discovery"] .triad[data-reveal="pending"],[data-mode="discovery"] .chain-fig[data-reveal="pending"],
+[data-bubbles="rich"] .prose[data-reveal="pending"],[data-bubbles="rich"] .doc-lede[data-reveal="pending"],
+[data-bubbles="rich"] .triad[data-reveal="pending"],[data-bubbles="rich"] .chain-fig[data-reveal="pending"]{
+  opacity:.92;transform:translateY(6px) scale(.994)}
+@media (max-width:719px){
+  h2[data-reveal="pending"],.sect-head[data-reveal="pending"],.sect-lede[data-reveal="pending"],
+  .prose[data-reveal="pending"],.doc-lede[data-reveal="pending"],
+  .triad[data-reveal="pending"],.chain-fig[data-reveal="pending"]{
+    transform:translateY(4px);opacity:.9}
+}
+@media (prefers-reduced-motion:reduce){
+  h2,.sect-head,.sect-lede,.prose,.doc-lede,.triad,.chain-fig{opacity:1!important;transform:none!important}
+}
+
+/* ---------- motion: state and structure only; nothing loops ----------
+   Hooks for later animation (structure exists now; nothing below depends on it):
+   A  /r signal route      [data-trace="identity|thesis|company|evidence|contact"] on the hero, sections, route bus, footer
+   B  thesis trace         .chain li[data-trace] in order: signal transformation routing control interface feedback consequence
+   C  company routing      .sel-name and the dossier <h1> share view-transition-name co-<slug>
+   D  evidence trace       <details class="trace">; .trace-body::before is the path into the evidence
+   E  PAC separation       .triad li[data-concern="capability|authority|safety"]
+   Reserved: [data-concept] on the thesis vocabulary, for a future "trace the signal" view. */
+@keyframes draw{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@keyframes pkt{from{stroke-dashoffset:2}to{stroke-dashoffset:-102}}
+/* 008H: one coherent taxonomy cycle. Every .pkt-primary shares the same
+   --dur (one full cycle, ~9-16s) and the hop happens in the first ~22% of
+   it, then holds hidden — so 7-8 elements with staggered --delay values
+   spread across that one shared duration read as a single signal hopping
+   signal -> transformation -> routing -> control (two fragments) ->
+   consequence -> feedback, each one arriving, settling, then waiting for
+   the next lap, never all mid-flight together. Consequence-then-feedback
+   (not the .chain component's listed order elsewhere) matches this
+   substrate's actual drawn geometry: the forward path physically ends at
+   the consequence block before feedback's return loop begins. */
+@keyframes pkt-hop{
+  0%{stroke-dashoffset:2;opacity:0}
+  6%{opacity:1}
+  22%{stroke-dashoffset:-102;opacity:1}
+  30%{opacity:0}
+  100%{stroke-dashoffset:-102;opacity:0}
+}
+/* Micro-effect B, signal echo: the exact same hop shape, peaking far
+   dimmer (.28 vs 1) so a duplicate of one packet's own path, delayed a
+   fraction of a second behind it, reads as a faint trailing afterimage —
+   not a second signal, an echo of the first. */
+@keyframes pkt-hop-echo{
+  0%{stroke-dashoffset:2;opacity:0}
+  6%{opacity:.28}
+  22%{stroke-dashoffset:-102;opacity:.28}
+  30%{opacity:0}
+  100%{stroke-dashoffset:-102;opacity:0}
+}
+@keyframes node-pulse{0%,100%{opacity:.6;filter:none}50%{opacity:1;filter:var(--geo-glow)}}
+@keyframes rule-in{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes lock{0%{transform:scale(.2);opacity:0}64%{transform:scale(1.3);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes corner-in{from{opacity:0;transform:translate(6px,6px)}to{opacity:.7;transform:none}}
+@keyframes pal-in{from{opacity:0;transform:translateY(-6px) scale(.99)}to{opacity:1;transform:none}}
+@keyframes signal-scroll{to{transform:translateY(-50%)}}
+@keyframes bubble-rise{
+  0%{opacity:0;transform:translateY(0) translateX(0)}
+  10%{opacity:var(--op,.16)}
+  85%{opacity:var(--op,.16)}
+  100%{opacity:0;transform:translateY(-115vh) translateX(var(--drift,6px))}
+}
+/* 008J: rigid trace -> brief small deformation -> resolves clean. Quiet for
+   most of the cycle (0-58%, the "quiet interval"), a short bend-and-hold
+   (66-86%, the "event"), then resolves (86-94%). Displacement is a literal
+   CSS transform (translate + skew) on a low-opacity DUPLICATE of an
+   already-drawn peripheral fragment (Option B, duplicate-path refraction)
+   -- the real route never moves, only its faint echo briefly does. */
+@keyframes liquify{
+  0%,58%,100%{opacity:0;transform:translate(0,0) skewX(0)}
+  66%,86%{opacity:.5;transform:translate(3px,-2px) skewX(-1deg)}
+  94%{opacity:0;transform:translate(0,0) skewX(0)}
+}
+/* Micro-effect A, node caustic shimmer: very slow, low-amplitude brightness
+   drift on a single selected junction — deliberately slower/subtler than
+   node-pulse so it reads as ambient light, not a state change. */
+@keyframes shimmer{0%,100%{opacity:.35}50%{opacity:.6}}
+/* 008L, Part 7-11: packet/node arrival glare. Same shared 13.7s taxonomy
+   cycle as pkt-hop, but the entire flash+decay happens in the first ~6%
+   of it (~180ms peak, ~800ms total decay) — everything else is quiet, so
+   this reads as a brief bloom at one arrival moment, not a permanent glow.
+   scale+opacity only (compositor-friendly); the "core/inner-halo/outer-
+   glare" structure comes from a static per-element blur+drop-shadow (see
+   .glare-halo), not from extra animated layers. */
+@keyframes glare-flare{
+  0%,100%{opacity:0;transform:scale(.4)}
+  1.3%{opacity:1;transform:scale(.7)}
+  3.3%{opacity:.45;transform:scale(1.3)}
+  5.8%{opacity:0;transform:scale(1.6)}
+}
+.glare-halo{opacity:0;filter:blur(1.5px) drop-shadow(0 0 4px currentColor)}
+/* 011B4: hierarchical joint rotation. Each group rotates around its own
+   joint's real SVG-space coordinate (transform-origin), nested inside the
+   parent it's physically attached to, so shoulder/elbow/wrist compose
+   correctly as forward kinematics — never a translate of the whole arm.
+   The portrait variant reuses these origins unchanged: its cell is the
+   same local geometry inside a translated wrapper <g>, and an SVG
+   transform-origin is resolved in the element's own user space.
+   site.js only ever writes the --act-* custom properties; the transition
+   itself (and therefore all actual motion) lives ONLY in the
+   reduced-motion-aware block below. Idle (--act-*:0, jaws open) is
+   exactly the pose drawn in the HTML. */
+.act-shoulder{transform-origin:830px 636px;transform:rotate(var(--act-shoulder,0deg))}
+.act-elbow{transform-origin:830px 532px;transform:rotate(var(--act-elbow,0deg))}
+.act-wrist{transform-origin:930px 532px;transform:rotate(var(--act-wrist,0deg))}
+.act-jaw--a{transform-origin:936px 521px;transform:rotate(calc(var(--act-jaw,18) * -1deg))}
+.act-jaw--b{transform-origin:936px 543px;transform:rotate(calc(var(--act-jaw,18) * 1deg))}
+@media (prefers-reduced-motion:no-preference){
+  @view-transition{navigation:auto}
+  /* No overshoot: the arm carries a capsule now, so joints settle crisply
+     onto their station instead of bouncing past it. One transition per
+     joint move, driven by --act-t; still event-driven, no extra timers. */
+  .act-shoulder,.act-elbow,.act-wrist,.act-jaw--a,.act-jaw--b{transition:transform var(--act-t,320ms) cubic-bezier(.4,0,.2,1)}
+  .sv .draw{animation:draw 2.4s var(--ease) both}
+  .sv .pkt:not(.pkt-primary):not(.pkt-echo){animation:pkt var(--dur,7s) linear var(--delay,0s) infinite}
+  .sv .pkt-primary{animation:pkt-hop var(--dur,13.7s) var(--ease) var(--delay,0s) infinite}
+  .sv .pkt-echo{animation:pkt-hop-echo var(--dur,13.7s) var(--ease) var(--delay,0s) infinite}
+  .sv .pulse{animation:node-pulse var(--dur,8s) var(--ease) var(--delay,0s) infinite}
+  .sv .liquify-echo{animation:liquify var(--dur,9.4s) var(--ease) var(--delay,0s) infinite}
+  .sv .shimmer{animation:shimmer var(--dur,19s) var(--ease) var(--delay,0s) infinite}
+  .sv .glare-halo{animation:glare-flare var(--dur,13.7s) linear var(--delay,0s) infinite}
+  .hero-line--follow::before{animation:rule-in 640ms var(--ease) 200ms both}
+  .hero-line--follow::after{animation:lock 420ms var(--ease) 840ms both}
+  .bus a[aria-current="page"]::after{animation:lock 380ms var(--ease) 120ms both}
+  .sheet::before{animation:corner-in var(--t-slow) var(--ease) 80ms both}
+  .sheet::after{animation:corner-in var(--t-slow) var(--ease) 160ms both}
+  .palette[open]{animation:pal-in var(--t) var(--ease)}
+  .signal-col{animation:signal-scroll var(--dur,26s) linear infinite;animation-delay:var(--delay,0s)}
+  .stmt-key::before{animation:signal-scroll var(--dur,20.6s) linear infinite;animation-delay:var(--delay,0s)}
+  .bubble{animation:bubble-rise var(--dur,20s) ease-in-out var(--delay,0s) infinite}
+  .chain-t.is-popping{animation:chain-pop 360ms var(--ease)}
+}
+::view-transition-old(root),::view-transition-new(root){animation-duration:200ms}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+
+/* ---------- micro-bubbles: sparse organic counterpoint, decorative only ----------
+   008H, Part 10-16. A deliberately different motion language from the
+   circuit (soft/vertical vs structured/directional) inside the same
+   engineered system — same layering tier as .substrate/.signal-stripe
+   (fixed, z-index:0, painted behind main via the z-index:1 rule already
+   established for both modes), same --stripe-rgb sage family (plus one
+   rare --cold-glow-tinted "near" bubble, reusing the token that already
+   existed for cold accents rather than inventing a new color).
+   16 shared <span> elements ship once via site/shell/header.html, so every
+   page gets the same pool; PAGE DENSITY is entirely a display:none question
+   via nth-child, keyed off data-mode (default inspection: sparse, ~25%) and
+   an explicit data-bubbles="rich" opt-in on thesis.html/pac.html (~44%) —
+   /r shows the full pool. Every --l (horizontal position) sits in the
+   outer margins only (3-9% or 85-96%), the same band the binary streams
+   already prove is clear of the readable measure/.rail at every
+   breakpoint, so bubbles can never sit over body copy by construction, not
+   by placement luck. Base opacity is set via --op on the element itself
+   (not just inside the keyframe), so a reduced-motion browser — which
+   never receives the animation property at all, same established pattern
+   as everywhere else in this file — renders each one as a static ring at
+   its authored position, per "keep a few static bubble rings." */
+.bubbles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bubble{position:absolute;left:var(--l);bottom:-40px;border-radius:50%;border:1px solid rgba(var(--stripe-rgb),.5);background:transparent;opacity:var(--op,.16)}
+.bubble--far{width:3px;height:3px;--op:.14}
+.bubble--mid{width:5px;height:5px;--op:.2}
+.bubble--near{width:8px;height:8px;--op:.26;border-color:var(--cold-glow)}
+[data-mode="inspection"]:not([data-bubbles="rich"]) .bubble:nth-child(n+5){display:none}
+[data-mode="inspection"][data-bubbles="rich"] .bubble:nth-child(n+8){display:none}
+@media (max-width:719px){
+  [data-mode="discovery"] .bubble:nth-child(n+4){display:none}
+  [data-mode="inspection"] .bubble:nth-child(n+3){display:none}
+}
+
+/* ---------- 011B3: PAC demonstrator (homepage #pac) ----------
+   Reuses .sect/.ledger/.sect-link as-is; only the offline banner, the
+   replay buttons and the five-row trace readout are new. Tokens only. The
+   buttons and readout stay [hidden] until site.js runs — without JS the
+   ledger above is the complete, static description of D01–D05. */
+#pac::before{background:radial-gradient(ellipse 66% 80% at 50% 45%,
+    rgba(31,45,36,var(--field-peak-weak)) 0%,
+    rgba(31,45,36,calc(var(--field-peak-weak) * .6)) 35%,
+    rgba(31,45,36,calc(var(--field-peak-weak) * .25)) 65%,
+    transparent 100%)}
+.pac-offline{max-width:64ch;margin:var(--space-flow) 0;padding:10px 12px;border:1px solid var(--cold-2);font-size:.93rem;color:var(--ink-2)}
+.pac-offline-k{display:block;margin-bottom:4px;font-family:var(--mono);font-size:.74rem;font-weight:600;letter-spacing:.12em;color:var(--cold)}
+.pac-run{justify-self:start;min-height:34px;padding:0 12px;border:1px solid var(--rule-3);border-radius:3px;background:none;font:inherit;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);cursor:pointer}
+.pac-run:hover{border-color:var(--cold);color:var(--ink-strong)}
+.pac-run:focus-visible{outline:2px solid var(--cold-2);outline-offset:3px}
+.pac-run[aria-disabled="true"]{opacity:.45;cursor:default}
+.pac-flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;margin:var(--space-flow) 0 0;border:1px solid var(--rule-2);background:var(--rule)}
+.pac-flow>div{padding:10px 12px;background:var(--void)}
+.pac-flow dt{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint-text)}
+.pac-flow dd{margin:4px 0 0;font-family:var(--mono);font-size:.82rem;color:var(--ink);overflow-wrap:anywhere}
+.pac-rule{max-width:64ch;margin:var(--space-flow) 0 0;font-size:.93rem;color:var(--ink-3)}
+
+/* ---------- 011C TRACE mode ----------
+   Optional, OFF by default, built by site.js only. Tokens only; no new colour, no motion.
+   The readout is position:sticky at the end of <body>, so it takes real space at the end of
+   the page (nothing is ever hidden behind it) and rides the bottom edge while scrolling.
+   Nothing in the readout moves, so reduced motion changes nothing about it. */
+.trace-toggle{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 10px;border:1px solid var(--rule-2);border-radius:6px;background:none;color:var(--faint-text);font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;cursor:pointer;transition:border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+.trace-toggle:hover{border-color:var(--cold-2);color:var(--ink)}
+.trace-toggle[aria-pressed="true"]{border-color:var(--cold-2);color:var(--cold)}
+.trace-toggle-state{color:var(--ink-3)}
+.trace-toggle[aria-pressed="true"] .trace-toggle-state{color:var(--cold)}
+.trace-strip{position:sticky;bottom:0;z-index:30;padding:8px var(--gutter) 10px;background:rgba(11,15,13,.95);border-top:1px solid var(--cold-2);font-family:var(--mono);font-size:.68rem;line-height:1.55;letter-spacing:.04em;color:var(--ink-3);pointer-events:none}
+.trace-strip[hidden]{display:none}
+.trace-strip p{margin:0;max-width:none}
+.tr-lead{margin-bottom:3px!important;color:var(--faint-text)}
+.tr-offline{font-weight:600;letter-spacing:.12em;color:var(--cold)}
+.tr-fields{display:flex;flex-wrap:wrap;gap:0 18px}
+.tr-f{white-space:nowrap}
+.tr-k{color:var(--faint-text)}
+.tr-v{color:var(--ink)}
+.tr-note{display:none;margin-top:6px;font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--cold);overflow-wrap:anywhere}
+html[data-tracemode="on"] .tr-note{display:block}
+@media (max-width:719px){
+  .trace-toggle{gap:4px;padding:0 8px;font-size:.64rem;letter-spacing:.08em}
+  .trace-strip{font-size:.62rem;letter-spacing:.02em}
+  .tr-fields{gap:0 12px}
+}
+@media print{.trace-toggle,.trace-strip,.tr-note{display:none!important}}

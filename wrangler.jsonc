@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "zneagle-com",
+  "compatibility_date": "2026-09-16",
+  // Static-only Worker: no script. Only ./public is published — never the repo root.
+  "assets": {
+    "directory": "./public",
+    // /r serves r.html with a 200; /r.html and /r/ get a 307 to /r.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "workers_dev": true
+  // Custom domains are attached in the Cloudflare dashboard (Workers & Pages > this Worker >
+  // Settings > Domains & Routes), not through `routes` in this file. In a non-interactive shell,
+  // `wrangler deploy` with custom_domain routes can silently override existing DNS records.
+  // Deploys without routes leave dashboard-attached domains untouched.
+}

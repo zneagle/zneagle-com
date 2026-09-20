@@ -1,0 +1,13 @@
+encoded_url=https://zneagle.com/r
+error_correction=H
+border_modules=4
+symbol=QR version 3 (29x29 modules), mask 6, byte mode, 21 bytes, 2 RS blocks x (13 data + 22 ecc)
+artifact_svg=zneagle-r-qr-H.svg (74 mm incl. quiet zone, 2 mm modules, black #000000, transparent background)
+artifact_png=zneagle-r-qr-H.png (740 px, 20 px/module, 1-bit, white background)
+sha256_svg=d20f39b159a2ad3bcba2f77d2686413238b8c64e1f4516eef3cd102bd6641f43
+sha256_png=2d1bcad1d6d31d24a4cfd3b74bc35c8204ed3bcf7e3feea5a9b03d6f73cab3ee
+status=LOCAL_PASS
+local_decode=PASS 2026-09-16T17:22Z: scripts/qr_verify.py (SVG grid == PNG grid, format BCH ok, RS syndromes zero, payload exact); scripts/qr_scan.swift (Apple Vision + CoreImage) on the PNG
+destination_check=PASS 2026-09-16T18:14Z: https://zneagle.com/r -> 200, body == public/index.html, certificate covers zneagle.com (scripts/verify_public.py)
+physical_scans=not recorded in this repository
+note=printed route text must be lowercase (/R returns 404)
