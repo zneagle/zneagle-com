@@ -32,9 +32,9 @@ OUT = ROOT / "public" / "r" / "downloads"
 EMAIL = json.loads((ROOT / "site" / "site.json").read_text(encoding="utf-8"))["contact"]["email"]
 UTC = datetime.timezone.utc
 PDF_DATES = {
-    "Resume": datetime.datetime(2026, 9, 21, 4, 8, 4, tzinfo=UTC),
+    "Resume": datetime.datetime(2026, 9, 21, 5, 40, 29, tzinfo=UTC),
     "Thesis": datetime.datetime(2026, 9, 18, 14, 15, 14, tzinfo=UTC),
-    "Open_Letter": datetime.datetime(2026, 9, 18, 14, 15, 14, tzinfo=UTC),
+    "Open_Letter": datetime.datetime(2026, 9, 21, 5, 42, 47, tzinfo=UTC),
 }
 
 ap = argparse.ArgumentParser(description="Regenerate the site's downloadable PDFs.")
@@ -162,9 +162,9 @@ d.ln(6)
 body(d, "Hands-on multidisciplinary technician moving deliberately into robotics and electromechanical systems. Background spans audio engineering and routed-system troubleshooting, mechanical and automotive diagnostics, metal fabrication and welding, sensor-driven interactive systems, electrical study, construction, equipment operation, and field problem solving. Strongest recurring skill is tracing consequential signal, control, and failure paths across interconnected systems. Seeking robotics, integration, test, reliability, prototype-build, field-support, and electromechanical roles where existing physical-systems competence can contribute immediately while deeper robotics expertise is developed professionally.")
 
 h2(d, "Technical foundation")
-ledger_item(d, "Signal paths / systems troubleshooting", "Years of audio engineering developed a systems model built around sources, transformations, routing, control points, interfaces, dependencies, feedback, downstream effects, and methodical fault isolation.")
+ledger_item(d, "Signal paths / systems troubleshooting", "Years of self-directed audio engineering developed mental modeling of signal paths, gain stages, processing chains, control points, dependencies, downstream effects, and methodical fault isolation.")
 ledger_item(d, "Sensors / controls / interactive systems", "Troubleshot systems involving RFID and other sensors, PLC-monitored elements, DMX lighting, Arduino hardware, programmable LEDs, audio, mechanical components, and computer controls. Used PLC monitoring interfaces to observe system states and test sensors; programming and ladder-logic changes were handled by software personnel.")
-ledger_item(d, "Mechanical systems / diagnostics", "Long-term hands-on diagnosis and repair of gasoline- and diesel-powered vehicles, dirt bikes, ATVs, and small engines, including fuel, ignition, starting/charging, cooling, lubrication, wiring, sensors, controls, and mechanical subsystems.")
+ledger_item(d, "Mechanical systems / diagnostics", "Long-term self-directed hands-on diagnosis and repair of gasoline- and diesel-powered vehicles, dirt bikes, ATVs, and small engines; familiarity with fuel, ignition, starting/charging, cooling, lubrication, wiring, sensors, and controls.")
 ledger_item(d, "Fabrication / build execution", "GMAW and SMAW welding, oxy-fuel cutting, brake, shear, punch, drill press, structural fabrication, fitting, rigging, machinery, field installation, material handling, and physical build sequencing.")
 ledger_item(d, "Electrical foundation", "Completed Martin Electrical School's Journeyman One program in May 2026. Studied electrical theory, code, safety, and trade fundamentals; one of two students in the class to score 100 on the midterm examination.")
 
@@ -258,7 +258,7 @@ paras = [
     "Software and AI extended the same pattern again. The medium changed, but the questions did not: What enters the system? What transforms it? Which layer controls what happens next? What context survives an interface? What dependency failed? What evidence tells you whether the problem was reasoning, routing, execution, or physical reality?",
     "My work history and technical interests make more sense to me as one trajectory than as a collection of unrelated jobs. Audio engineering taught me to see signal paths. Mechanical diagnosis taught me to trace physical causality. Fabrication taught me to respect material reality. Interactive systems taught me to reason across sensors, controls, software, and mechanisms. Electrical study added power, protection, and formal physical-system constraints. Software and AI extended the same reasoning into information, orchestration, and decision systems. Robotics is where those layers become consequential at once.",
     "I am not presenting myself as an experienced robotics engineer, controls engineer, embedded-firmware specialist, or someone who has already mastered the entire robotics stack. I have not.",
-    "What I can bring immediately is hands-on fabrication and welding experience, mechanical troubleshooting, electrical fundamentals, experience around sensor-driven interactive systems, comfort with tools and equipment, deep signal-path reasoning from audio engineering, software and AI systems thinking, and a strong habit of tracing causes across domain boundaries.",
+    "What I can bring immediately is hands-on fabrication and welding experience, mechanical troubleshooting, electrical fundamentals, experience around sensor-driven interactive systems, comfort with tools and equipment, signal-path reasoning from audio engineering, software and AI systems thinking, and a strong habit of tracing causes across domain boundaries.",
     "I am interested in roles where that foundation is useful now and where I can continue developing deeper professional competence in robotics hardware, electromechanical integration, test, reliability, controls, prototype build, field support, and systems that have to work outside of a diagram.",
     "If that combination is useful to your team, I would like to talk.",
 ]

@@ -174,6 +174,26 @@ def check_pdf_contact():
             fails.append(f"public/r/downloads/{f.name}: does not carry the contact address {email} from site/site.json")
 
 
+# Public-claim guards (2026-09-21 audit). Each phrase was ruled out by the owner or by located evidence and must not
+# reappear on a page or in a downloadable PDF. Exact-phrase only: the site's many explicit non-claims stay untouched.
+CLAIM_GUARDS = (
+    ("Three years of metal fabrication", "the dated fabrication roles total 2 years 6 months"),
+    ("no public address published yet", "stale contact statement; the address is in site/site.json"),
+    ("part of robotics I already have direct experience", "relabels maintenance work as robotics experience"),
+    ("part of the stack I already have direct experience", "relabels maintenance work as robotics experience"),
+)
+
+
+def check_claim_guards():
+    docs = {f"public/{f.relative_to(PUB).as_posix()}": re.sub(r"<[^>]+>", " ", f.read_text(encoding="utf-8")) for f in PUB.rglob("*.html")}
+    docs.update({f"public/{f.relative_to(PUB).as_posix()}": pdf_text(f).decode("latin-1") for f in PUB.rglob("*.pdf")})
+    for name, text in sorted(docs.items()):
+        flat = re.sub(r"\s+", " ", text)
+        for phrase, why in CLAIM_GUARDS:
+            if phrase.lower() in flat.lower():
+                fails.append(f"{name}: contains ruled-out claim {phrase!r} ({why})")
+
+
 def check_anchors(pages):
     """A link to another page's fragment must land on an id that exists there."""
     for name, page in pages.items():
@@ -261,6 +281,7 @@ def main():
     check_anchors(pages)
 
     check_pdf_contact()
+    check_claim_guards()
     refs = [ref for page in pages.values() for ref in page.refs]
     if not any(r.startswith("mailto:") for r in refs):
         warns.append("site: no mailto: contact link yet (CONTACT gate stays open)")
