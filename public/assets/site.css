@@ -192,6 +192,10 @@ a:hover{text-decoration-color:var(--cold)}
   .crumbs li:last-child::before{display:none}
 }
 .topbar-end{display:flex;align-items:center;gap:8px;margin-left:auto}
+@media (max-width:359px){
+  .crumbs{display:none}
+  .topbar-end{gap:4px}
+}
 .topbar-contact{display:inline-flex;align-items:center;height:36px;padding:0 14px;border:1px solid var(--rule-3);border-radius:6px;font-size:.88rem;font-weight:600;color:var(--ink);text-decoration:none;transition:border-color var(--t-fast) var(--ease),background-color var(--t-fast) var(--ease)}
 .topbar-contact:hover{border-color:var(--cold);background:var(--panel)}
 .cmdk-trigger{display:inline-flex;align-items:center;gap:10px;height:36px;padding:0 8px 0 12px;border:1px solid var(--rule-2);border-radius:6px;background:var(--panel);color:var(--ink-3);font:inherit;font-size:.84rem;cursor:pointer;transition:border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
@@ -511,6 +515,26 @@ body:has(.selector-list a:hover) .substrate :is(.z-route,.z-control){opacity:.4}
    .chain-entrance is homepage-only markup (index.html/r.html); /r/thesis's
    own chain-fig instance has no such wrapper and is unaffected. */
 .chain-entrance{padding-top:var(--space-breath)}
+/* Taxonomy backing (home spine only, via .chain-entrance): the stage labels sit directly over the busiest
+   part of the substrate (rails, junctions, the actuator cell). The list gets a feathered forest capsule
+   built from the reading-capsule tokens (--rf colour, --rf-x/--rf-y bleed, same feather profile) but kept
+   as its own rule, outside the no-filter 011C3 block above. Base = flat .84 forest, so legibility never
+   depends on blur. Where backdrop-filter exists the fill drops to a translucent forest and the substrate
+   behind it is softened, the glass pairing .topbar already uses, so the page atmosphere still shows through.
+   Only the list is backed: the explainer keeps its own capsule and the actuator zone stays sharp. No
+   border, outline, radius or shadow; inert (pointer-events:none) and behind the text (z-index:-1). */
+#thesis .chain-entrance .chain{--tb-mx:linear-gradient(to right,transparent 0,rgba(0,0,0,.08) calc(var(--rf-x) * .12),rgba(0,0,0,.35) calc(var(--rf-x) * .3),rgba(0,0,0,.75) calc(var(--rf-x) * .62),#000 var(--rf-x),#000 calc(100% - var(--rf-x)),rgba(0,0,0,.75) calc(100% - var(--rf-x) * .62),rgba(0,0,0,.35) calc(100% - var(--rf-x) * .3),rgba(0,0,0,.08) calc(100% - var(--rf-x) * .12),transparent 100%);
+  --tb-my:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.08) calc(var(--rf-y) * .12),rgba(0,0,0,.35) calc(var(--rf-y) * .3),rgba(0,0,0,.75) calc(var(--rf-y) * .62),#000 var(--rf-y),#000 calc(100% - var(--rf-y)),rgba(0,0,0,.75) calc(100% - var(--rf-y) * .62),rgba(0,0,0,.35) calc(100% - var(--rf-y) * .3),rgba(0,0,0,.08) calc(100% - var(--rf-y) * .12),transparent 100%)}
+#thesis .chain-entrance .chain::before{content:"";position:absolute;z-index:-1;pointer-events:none;
+  inset:calc(-1 * var(--rf-y)) calc(-1 * var(--rf-x));
+  background:rgba(var(--rf),.84);
+  -webkit-mask-image:var(--tb-mx),var(--tb-my),radial-gradient(ellipse 80% 86% at 50% 50%,#000 64%,transparent 100%);
+  mask-image:var(--tb-mx),var(--tb-my),radial-gradient(ellipse 80% 86% at 50% 50%,#000 64%,transparent 100%);
+  -webkit-mask-composite:source-in,source-in;mask-composite:intersect,intersect}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  #thesis .chain-entrance .chain::before{background:rgba(var(--rf),.5);
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+}
 /* 010F: .sect--select's old top-fade gradient was written for the previous
    full-bleed .sect (it visually separated the companies zone from the flat
    void background). Every section now carries its own soft radial field
@@ -536,7 +560,7 @@ body:has(.selector-list a:hover) .substrate :is(.z-route,.z-control){opacity:.4}
 .flow>li[data-node="cold"]::after{border-color:var(--cold)}
 .flow>li[data-node="warm"]::after{border-color:var(--warm);background:var(--warm)}
 .flow>li[data-node="boundary"]::after{transform:rotate(45deg);border-color:var(--cold)}
-@container spine (min-width:860px){
+@container spine (min-width:1120px){
   .flow{grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
   .flow>li{padding:30px 16px 0 0}
   .flow>li::before{left:0;right:0;top:5px;bottom:auto;width:auto;height:1px}
@@ -551,7 +575,7 @@ body:has(.selector-list a:hover) .substrate :is(.z-route,.z-control){opacity:.4}
 .chain>li:is([data-node="cold"],[data-node="boundary"]) .chain-t{color:var(--cold)}
 .chain>li[data-node="boundary"]{border-top:1px dashed var(--cold-2);border-bottom:1px dashed var(--cold-2);margin:6px 0}
 .chain-boundary{display:none}
-@container spine (min-width:860px){
+@container spine (min-width:1120px){
   .chain>li[data-node="boundary"]{border:0;margin:0}
   .chain-boundary{display:block;position:absolute;left:calc(400% / 7 - 14px);width:calc(100% / 7);top:-14px;bottom:-10px;border-left:1px dashed var(--cold-2);border-right:1px dashed var(--cold-2);pointer-events:none}
 }
@@ -805,8 +829,8 @@ body:has(.selector-list a:hover) .substrate :is(.z-route,.z-control){opacity:.4}
 .src-ref{font-family:var(--mono);font-size:.82em;color:var(--faint-text);text-decoration:none;white-space:nowrap}
 .src-ref:hover{color:var(--cold)}
 .src-drawer{margin-top:18px}
-.src-list{display:grid;gap:16px}
-.src-card{padding:14px 16px;border:1px solid var(--rule-2);scroll-margin-top:calc(var(--topbar-h) + 16px);transition:background-color var(--t) var(--ease),box-shadow var(--t) var(--ease)}
+.src-list{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.src-card{overflow-wrap:anywhere;padding:14px 16px;border:1px solid var(--rule-2);scroll-margin-top:calc(var(--topbar-h) + 16px);transition:background-color var(--t) var(--ease),box-shadow var(--t) var(--ease)}
 .src-card:target{background:var(--panel-2);box-shadow:inset 2px 0 0 var(--cold)}
 .src-title{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin:0 0 6px;font-weight:650;color:var(--ink)}
 .src-year{font-family:var(--mono);font-size:.86em;color:var(--faint-text)}

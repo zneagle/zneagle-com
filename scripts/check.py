@@ -5,8 +5,10 @@ FAIL blocks the deploy (exit 1). WARN is printed but doesn't block, because
 the site can go live before every content slot is filled.
 """
 import hashlib
+import json
 import re
 import sys
+import zlib
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -147,6 +149,31 @@ def check_page(f, rel):
     return page
 
 
+def pdf_text(path):
+    """Raw bytes of a PDF plus every inflated stream: enough to find a plain string in a small, uncompressed-font PDF."""
+    data = path.read_bytes()
+    parts = [data]
+    for m in re.finditer(rb"stream\r?\n(.*?)\r?\nendstream", data, re.S):
+        try:
+            parts.append(zlib.decompress(m.group(1)))
+        except zlib.error:
+            pass
+    return b"\n".join(parts)
+
+
+def check_pdf_contact():
+    """The PDFs are produced separately from the pages (scripts/gen_pdfs.py). Their contact statement must not drift
+    from site/site.json: the address is present in the résumé, and no PDF still says none is published."""
+    email = (json.loads((ROOT / "site" / "site.json").read_text(encoding="utf-8")).get("contact") or {}).get("email")
+    for f in sorted((PUB / "r" / "downloads").glob("*.pdf")):
+        text = pdf_text(f)
+        for stale in (b"no public address", b"Contact via the site"):
+            if stale in text:
+                fails.append(f"public/r/downloads/{f.name}: still says {stale.decode()!r} (regenerate: python3 scripts/gen_pdfs.py)")
+        if email and "resume" in f.name.lower() and email.encode() not in text:
+            fails.append(f"public/r/downloads/{f.name}: does not carry the contact address {email} from site/site.json")
+
+
 def check_anchors(pages):
     """A link to another page's fragment must land on an id that exists there."""
     for name, page in pages.items():
@@ -233,6 +260,7 @@ def main():
     pages = {f.relative_to(PUB).as_posix(): check_page(f, f.relative_to(PUB)) for f in sorted(PUB.rglob("*.html"))}
     check_anchors(pages)
 
+    check_pdf_contact()
     refs = [ref for page in pages.values() for ref in page.refs]
     if not any(r.startswith("mailto:") for r in refs):
         warns.append("site: no mailto: contact link yet (CONTACT gate stays open)")

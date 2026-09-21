@@ -12,7 +12,8 @@ Pages stay the editable source. Only the regions between
   toc       "On this page", built from the <h2 id=...> headings inside <main>
   sources   a collapsed drawer of every [[src:id]] token used on that page,
             each id resolved against site/sources.json
-  footer    contact, general material, feedback and the build fingerprint
+  footer    contact, general material, feedback, the source link and the build fingerprint
+  peer-contact  the peer / collab contact line on the home page
 
 A citation is never hand-written on a page: write the literal token
 [[src:id]] right after the claim it supports (id must exist in
@@ -22,8 +23,9 @@ marker expands into a drawer holding exactly the cards that page's own tokens
 reference, in first-appearance order — so a card can never go stale or orphaned
 independently of the citation using it.
 
-Owner-controlled values (contact address, feedback subject) live in
-site/site.json; a null value renders as an explicit pending state.
+Owner-controlled values (contact address, LinkedIn / GitHub / Substack profile URLs, feedback
+subject) live in site/site.json; a null value renders nothing, and no contact at all renders an
+explicit pending state.
 
 The build fingerprint is a hash of the published files with the fingerprint
 itself masked out, so it changes only when published content changes. The
@@ -225,15 +227,23 @@ def company_sub(route, companies):
     return f'<ol class="bus bus--sub"><li><a href="/r/companies/{match["slug"]}">{match["name_html"]}</a></li></ol>'
 
 
+def social_display(url):
+    """How a public profile URL is shown: no scheme, no leading www., no trailing slash (as on the business card)."""
+    return re.sub(r"^https?://(www\.)?", "", url).rstrip("/")
+
+
 def contact_block(cfg):
-    email, linkedin = cfg["contact"].get("email"), cfg["contact"].get("linkedin")
+    contact = cfg["contact"]
     lines = []
+    email = contact.get("email")
     if email:
         e = html.escape(email)
         lines.append(f'      <p class="contact-line"><a class="contact-email" href="mailto:{e}">{e}</a></p>')
-    if linkedin:
-        l = html.escape(linkedin)
-        lines.append(f'      <p class="contact-line"><a href="https://{l}" rel="me">{l}</a></p>')
+    for key in ("linkedin", "github", "substack"):
+        url = contact.get(key)
+        if url:
+            url = url if url.startswith(("http://", "https://")) else "https://" + url
+            lines.append(f'      <p class="contact-line"><a href="{html.escape(url)}" rel="me">{html.escape(social_display(url))}</a></p>')
     if not lines:
         lines.append('      <p class="contact-pending"><span class="pending-k">Pending — contact address</span>'
                      " An approved address is published here once it is confirmed.</p>")
@@ -247,6 +257,24 @@ def feedback_block(cfg, route, build):
     body = f"Page: {route or 'not-found'}\nBuild: {build}\n\nWhat worked, what broke, or what you expected:\n"
     href = f"mailto:{email}?subject={quote(cfg['feedback_subject'])}&body={quote(body)}"
     return f'      <p class="fb"><a class="fb-link" href="{html.escape(href)}" data-feedback>Bug / compliment</a></p>'
+
+
+def source_block(cfg):
+    """A link to the public source repository's development-approach section, in the footer's Signal column."""
+    link = cfg.get("source_link")
+    if not link:
+        return ""
+    return f'      <div class="foot-nav"><a href="{html.escape(link["url"])}">{html.escape(link["label"])}</a></div>'
+
+
+def peer_block(cfg):
+    """The peer / collab contact line in the home page's "Here for the same reason?" section."""
+    email = cfg["contact"].get("email")
+    if not email:
+        return ('    <p class="fb fb--pending" style="margin-top:16px"><span class="fb-k">Peer / collab contact</span>'
+                " Opens once the contact address is set.</p>")
+    return (f'    <p class="fb" style="margin-top:16px"><a class="fb-link" href="mailto:{html.escape(email)}">'
+            "Peer / collab contact</a></p>")
 
 
 def section_content_state(text, section_id):
@@ -398,6 +426,8 @@ def build_page(text, rel, partials, companies, cfg, build, states, src_registry)
                 ("{{share_url}}", "zneagle.com" + (route or "/r")),
                 ("{{contact}}", contact_block(cfg)),
                 ("{{feedback}}", feedback_block(cfg, route, build)),
+                ("{{peer_contact}}", peer_block(cfg)),
+                ("{{source_link}}", source_block(cfg)),
                 ("{{build_label}}", html.escape(cfg["build_label"])),
                 ("{{build}}", build),
                 ("{{companies_json}}", companies_json(companies)),

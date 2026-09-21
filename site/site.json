@@ -1,9 +1,15 @@
 {
   "_note": "Owner-controlled values consumed by scripts/sync_shell.py. Leave a value null until it is approved for public use.",
   "contact": {
-    "email": null,
-    "linkedin": null
+    "email": "io@zneagle.com",
+    "linkedin": "https://www.linkedin.com/in/zachary-neagle/",
+    "github": "https://github.com/zneagle",
+    "substack": "https://substack.com/@zacharyneagle"
   },
   "feedback_subject": "ZNEAGLE.COM /r feedback",
+  "source_link": {
+    "label": "Source and development approach",
+    "url": "https://github.com/zneagle/zneagle-com#development-approach"
+  },
   "build_label": "RoboBoston build"
 }
