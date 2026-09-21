@@ -32,7 +32,7 @@ OUT = ROOT / "public" / "r" / "downloads"
 EMAIL = json.loads((ROOT / "site" / "site.json").read_text(encoding="utf-8"))["contact"]["email"]
 UTC = datetime.timezone.utc
 PDF_DATES = {
-    "Resume": datetime.datetime(2026, 9, 21, 5, 40, 29, tzinfo=UTC),
+    "Resume": datetime.datetime(2026, 9, 21, 6, 24, 36, tzinfo=UTC),
     "Thesis": datetime.datetime(2026, 9, 18, 14, 15, 14, tzinfo=UTC),
     "Open_Letter": datetime.datetime(2026, 9, 21, 5, 42, 47, tzinfo=UTC),
 }
@@ -152,7 +152,7 @@ d.set_text_color(*INK)
 d.cell(0, 12, "Zachary Neagle", ln=1)
 d.set_font("Helvetica", "", 11)
 d.set_text_color(*MUTED)
-d.cell(0, 6, "RoboBoston 2026 - Robotics / Electromechanical Technician", ln=1)
+d.cell(0, 6, "RoboBoston 2026 - Electromechanical Technician · Robotics Transition", ln=1)
 d.set_font("Helvetica", "", 9.5)
 d.cell(0, 5.5, f"zneagle.com/r/resume  -  {EMAIL}", ln=1)
 d.set_draw_color(*RULE)
