@@ -32,7 +32,7 @@ OUT = ROOT / "public" / "r" / "downloads"
 EMAIL = json.loads((ROOT / "site" / "site.json").read_text(encoding="utf-8"))["contact"]["email"]
 UTC = datetime.timezone.utc
 PDF_DATES = {
-    "Resume": datetime.datetime(2026, 9, 21, 6, 24, 36, tzinfo=UTC),
+    "Resume": datetime.datetime(2026, 9, 21, 6, 31, 47, tzinfo=UTC),
     "Thesis": datetime.datetime(2026, 9, 18, 14, 15, 14, tzinfo=UTC),
     "Open_Letter": datetime.datetime(2026, 9, 21, 5, 42, 47, tzinfo=UTC),
 }
@@ -169,6 +169,12 @@ ledger_item(d, "Fabrication / build execution", "GMAW and SMAW welding, oxy-fuel
 ledger_item(d, "Electrical foundation", "Completed Martin Electrical School's Journeyman One program in May 2026. Studied electrical theory, code, safety, and trade fundamentals; one of two students in the class to score 100 on the midterm examination.")
 
 h2(d, "Selected relevant experience")
+job(d, "Experienced Crew Member", "Morton Buildings", "Norton, MA  -  Oct 2025-Present", [
+    "Post-frame construction from blueprint-based layout and foundation preparation through framing, roofing, siding, trim, and interior work.",
+    "Worked at height and operated equipment including telehandlers and elevating work platforms across traveling project sites.",
+    "Built for a varied customer base spanning farms, commercial facilities, artists' properties, and occasional residential projects.",
+])
+d.add_page()  # Keep the Level99 heading with its dates and experience.
 job(d, "Venue Technician", "Level99", "Natick, MA  -  Jul 2024-Jun 2025", [
     "Maintained and troubleshot interactive systems integrating RFID and other sensors, PLC-monitored elements, DMX lighting, Arduino hardware, programmable LEDs, audio, mechanical components, and computer-based controls.",
     "Used PLC monitoring interfaces primarily to observe system states and test sensors while supporting broad venue fault diagnosis, preventive maintenance, and physical repair.",
@@ -192,6 +198,7 @@ h2(d, "Education")
 ledger_item(d, "Martin Electrical School - Norwood, MA", "Journeyman One - Certificate of First-Year Completion, May 2026.")
 ledger_item(d, "Southeastern Regional Vocational Technical High School - Easton, MA", "Multi-Process Welding, Metal Fabrication & Machine Technology, May 2013.")
 
+d.add_page()  # Keep the tooling section together after the added experience.
 h2(d, "Selected hands-on tooling")
 ledger_item(d, "Electrical / electronics", "Multimeter, oscilloscope, bench power supply, soldering station, wire strippers/crimpers, heat-shrink work.")
 ledger_item(d, "Fabrication / shop", "MIG, TIG, and stick welding; oxy-fuel torch; angle grinder; drill press; brake and shear; ironworker/punch machine.")
