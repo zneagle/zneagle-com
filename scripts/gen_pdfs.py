@@ -32,7 +32,7 @@ OUT = ROOT / "public" / "r" / "downloads"
 EMAIL = json.loads((ROOT / "site" / "site.json").read_text(encoding="utf-8"))["contact"]["email"]
 UTC = datetime.timezone.utc
 PDF_DATES = {
-    "Resume": datetime.datetime(2026, 9, 21, 6, 31, 47, tzinfo=UTC),
+    "Resume": datetime.datetime(2026, 9, 21, 6, 41, 1, tzinfo=UTC),
     "Thesis": datetime.datetime(2026, 9, 18, 14, 15, 14, tzinfo=UTC),
     "Open_Letter": datetime.datetime(2026, 9, 21, 5, 42, 47, tzinfo=UTC),
 }
@@ -207,7 +207,7 @@ ledger_item(d, "Controls / signal", "DMX lighting console, Arduino, Raspberry Pi
 ledger_item(d, "Software", "VS Code, Git/GitHub, Linux shell, Python, JavaScript/HTML/CSS, Node.js/npm, AI coding tools including Claude Code and Codex.")
 
 h2(d, "Additional qualifications")
-body(d, "OSHA 10  -  Qualified rigger / signal person  -  Telehandler, skid loader, self-propelled and boom-supported work-platform experience  -  Valid driver's license  -  Reliable transportation  -  Available for travel")
+body(d, "OSHA 10  -  Rigging and signaling  -  Telehandler, skid loader, self-propelled and boom-supported work-platform experience  -  Valid driver's license  -  Reliable transportation  -  Available for travel")
 
 h2(d, "What I'm targeting")
 body(d, "Robotics / mechatronics hardware technician, prototype and integration/test, field robotics and deployment, reliability/root-cause work, and manufacturing/test engineering support where hands-on execution can grow into increasing engineering ownership.")
