@@ -535,6 +535,25 @@ body:has(.selector-list a:hover) .substrate :is(.z-route,.z-control){opacity:.4}
   #thesis .chain-entrance .chain::before{background:rgba(var(--rf),.5);
     -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 }
+/* Thesis opening (2026-09-21): the "Different machines. Same problem." run sits over the schematic's dashed
+   cell and wires, which read sharper here than behind the taxonomy list. It gets the same treatment as the
+   list, from the same tokens: the lede gains a feathered forest capsule (it had none), and the sub-paragraph
+   and bridge line, which already have the flat 011C3 capsule, gain the same blur where backdrop-filter exists.
+   Flat .84 stays the base, so legibility never depends on blur; no border, radius or shadow; inert and behind
+   the text. The lede shrinks to its text width so its capsule follows the words rather than the full row. */
+#thesis .sect-lede--beat{position:relative;width:fit-content;max-width:100%;
+  --tb-mx:linear-gradient(to right,transparent 0,rgba(0,0,0,.08) calc(var(--rf-x) * .12),rgba(0,0,0,.35) calc(var(--rf-x) * .3),rgba(0,0,0,.75) calc(var(--rf-x) * .62),#000 var(--rf-x),#000 calc(100% - var(--rf-x)),rgba(0,0,0,.75) calc(100% - var(--rf-x) * .62),rgba(0,0,0,.35) calc(100% - var(--rf-x) * .3),rgba(0,0,0,.08) calc(100% - var(--rf-x) * .12),transparent 100%);
+  --tb-my:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.08) calc(var(--rf-y) * .12),rgba(0,0,0,.35) calc(var(--rf-y) * .3),rgba(0,0,0,.75) calc(var(--rf-y) * .62),#000 var(--rf-y),#000 calc(100% - var(--rf-y)),rgba(0,0,0,.75) calc(100% - var(--rf-y) * .62),rgba(0,0,0,.35) calc(100% - var(--rf-y) * .3),rgba(0,0,0,.08) calc(100% - var(--rf-y) * .12),transparent 100%)}
+#thesis .sect-lede--beat::before{content:"";position:absolute;z-index:-1;pointer-events:none;
+  inset:calc(-1 * var(--rf-y)) calc(-1 * var(--rf-x));
+  background:rgba(var(--rf),.84);
+  -webkit-mask-image:var(--tb-mx),var(--tb-my),radial-gradient(ellipse 80% 86% at 50% 50%,#000 64%,transparent 100%);
+  mask-image:var(--tb-mx),var(--tb-my),radial-gradient(ellipse 80% 86% at 50% 50%,#000 64%,transparent 100%);
+  -webkit-mask-composite:source-in,source-in;mask-composite:intersect,intersect}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  #thesis :is(.sect-lede--beat,.sect-sub,.chain-bridge)::before{background:rgba(var(--rf),.5);
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+}
 /* 010F: .sect--select's old top-fade gradient was written for the previous
    full-bleed .sect (it visually separated the companies zone from the flat
    void background). Every section now carries its own soft radial field
