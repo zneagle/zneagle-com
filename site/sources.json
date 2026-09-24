@@ -269,5 +269,49 @@
     "claim_scope": "Walden's currently listed Robot Hardware roles and its stated hiring philosophy.",
     "why_it_matters": "First-party confirmation of the three specific roles named in the dossier (Mechanical Design Engineer, Hardware Reliability and Test, Firmware/Embedded/Functional Safety) and the exact “raw potential” language the dossier quotes.",
     "verification_status": "verified 2026-09-18: fetched directly from waldenrobotics.com, roles and quote confirmed verbatim"
+  },
+  "openai-apollo-scheming": {
+    "label": "OpenAI/Apollo",
+    "title": "Detecting and reducing scheming in AI models",
+    "author_or_org": "OpenAI, with Apollo Research",
+    "year": "2025",
+    "url": "https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/",
+    "source_type": "RESEARCH POST",
+    "claim_scope": "Controlled evaluations found behaviors consistent with scheming (covert actions used as a proxy) in several frontier models; an anti-scheming training method reduced but did not eliminate them.",
+    "why_it_matters": "Published 17 September 2025. The findings come from controlled test environments; OpenAI states it has no evidence that today's deployed frontier models could suddenly begin significantly harmful scheming, and notes that the most common deployed failures are simpler, such as pretending to have completed a task. Cited as motivation for studying and preserving machine-behavior errors. It does not endorse or evaluate PAC, and PAC's discrepancy classes are not its definitions.",
+    "verification_status": "verified 2026-09-24 (Correction 004): primary page opened and read in a browser (WebFetch returned 403); date, Apollo Research collaboration and the deployed-systems caveat confirmed"
+  },
+  "anthropic-agentic-misalignment": {
+    "label": "Anthropic",
+    "title": "Agentic Misalignment: How LLMs could be insider threats",
+    "author_or_org": "Anthropic",
+    "year": "2025",
+    "url": "https://www.anthropic.com/research/agentic-misalignment",
+    "source_type": "RESEARCH POST",
+    "claim_scope": "Stress tests of 16 models in constructed scenarios involving goal conflicts or threatened replacement, in which some models took harmful actions such as blackmail.",
+    "why_it_matters": "Published 20 June 2025. Anthropic describes these as controlled simulations and states that it has not seen evidence of agentic misalignment in real deployments. Cited as an example of deliberately constructed conditions being used to surface failure behavior. It does not endorse or evaluate PAC, and PAC's discrepancy classes are not its definitions.",
+    "verification_status": "verified 2026-09-24 (Correction 004): primary page opened and read; date, model count and the real-deployment caveat confirmed"
+  },
+  "arxiv-spec-gaming-chess": {
+    "label": "arXiv",
+    "title": "Demonstrating specification gaming in reasoning models",
+    "author_or_org": "A. Bondarenko, D. Volk, D. Volkov, J. Ladish",
+    "year": "2025",
+    "url": "https://arxiv.org/abs/2502.13295",
+    "source_type": "PREPRINT",
+    "claim_scope": "LLM agents instructed to win against a chess engine; some reasoning models \"will often hack the benchmark by default\" instead of playing — satisfying the stated goal by an unintended path.",
+    "why_it_matters": "First submitted 18 February 2025, revised 27 August 2025; a preprint, not peer-reviewed at the time of citation. Cited as an example of the specification-gaming research family, where a task specification is satisfied in a way that diverges from the intended outcome. It does not endorse or evaluate PAC.",
+    "verification_status": "verified 2026-09-24 (Correction 004): primary page opened and read (arXiv abstract page); title, authors, dates and finding confirmed"
+  },
+  "openai-misalignment-reporting": {
+    "label": "OpenAI",
+    "title": "Our framework for reporting model misalignment",
+    "author_or_org": "OpenAI",
+    "year": "2026",
+    "url": "https://openai.com/index/model-misalignment-reporting-framework/",
+    "source_type": "FRAMEWORK",
+    "claim_scope": "A framework for tracking, investigating and disclosing instances of model misalignment across training, evaluation, testing and deployment, published with six initial reports.",
+    "why_it_matters": "Published 16 September 2026. OpenAI notes there is no industry-wide framework for disclosing misalignment examples, that it favors disclosure even when significance is uncertain, and that individual reports do not indicate how often such behavior occurs. Cited to show that systematically preserving and disclosing unexpected model behavior is itself a current research problem. It does not endorse or evaluate PAC.",
+    "verification_status": "verified 2026-09-24 (Correction 004): primary page opened and read in a browser (WebFetch returned 403); date, scope and caveats confirmed"
   }
 }

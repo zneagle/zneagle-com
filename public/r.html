@@ -287,15 +287,18 @@
       <path class="dash draw" pathLength="100" d="M20 560h380"/>
       <path d="M20 540v40M400 540v40"/>
     </g>
+    <!-- Correction 002: the consequence -> feedback tail is tucked up under the interface line
+         (block 643->566, junction 730->584) so it no longer threads through the 2x2 hero actions on
+         phones. The arm, loop shape and timings are unchanged. -->
     <g class="g z-consequence warm" data-trace="consequence">
-      <path class="draw" pathLength="100" d="M211 560v83"/>
-      <rect class="solid" x="204" y="643" width="14" height="14"/>
-      <path style="stroke-width:3" d="M211 664v56"/>
+      <path class="draw" pathLength="100" d="M211 560v6"/>
+      <rect class="solid" x="204" y="566" width="14" height="14"/>
+      <path style="stroke-width:3" d="M211 580v4"/>
     </g>
     <g class="g z-feedback cold" data-trace="feedback">
-      <path d="M211 730h109q20 0 20-20V330q0-20-20-20h-89"/>
+      <path d="M211 584h109q20 0 20-20V330q0-20-20-20h-89"/>
       <path d="M144 302l-16 8 16 8"/>
-      <circle class="node pulse" style="--dur:13.7s;--delay:11.74s" cx="211" cy="730" r="5"/>
+      <circle class="node pulse" style="--dur:13.7s;--delay:11.74s" cx="211" cy="584" r="5"/>
     </g>
     <g class="g z-measure">
       <path d="M40 300h40M40 560h40M60 300v260"/>
@@ -315,16 +318,16 @@
       <path class="pkt pkt-primary" pathLength="100" style="--dur:13.7s;--delay:5.87s" d="M60 790h50v-40h60"/>
       <path class="pkt pkt-primary" pathLength="100" style="--dur:13.7s;--delay:6.9s" d="M110 790v40h60"/>
       <path class="pkt pkt-primary cold" pathLength="100" style="--dur:13.7s;--delay:7.83s" d="M211 560v20"/>
-      <path class="pkt pkt-primary warm" pathLength="100" style="--dur:13.7s;--delay:9.79s" d="M211 560v83"/>
-      <path class="pkt pkt-echo warm" pathLength="100" style="--dur:13.7s;--delay:9.97s" d="M211 560v83"/>
-      <path class="pkt pkt-primary cold" pathLength="100" style="--dur:13.7s;--delay:11.74s" d="M211 730h109q20 0 20-20V330q0-20-20-20h-89"/>
+      <path class="pkt pkt-primary warm" pathLength="100" style="--dur:13.7s;--delay:9.79s" d="M211 560v6"/>
+      <path class="pkt pkt-echo warm" pathLength="100" style="--dur:13.7s;--delay:9.97s" d="M211 560v6"/>
+      <path class="pkt pkt-primary cold" pathLength="100" style="--dur:13.7s;--delay:11.74s" d="M211 584h109q20 0 20-20V330q0-20-20-20h-89"/>
     </g>
     <g class="g glare">
       <circle class="glare-halo" style="--dur:13.7s;--delay:4.97s" cx="97" cy="396" r="8" data-actuator-trigger="L"/>
       <circle class="glare-halo cold" style="--dur:13.7s;--delay:11s" cx="325" cy="396" r="8" data-actuator-trigger="R"/>
       <circle class="glare-halo" style="--dur:13.7s;--delay:8.88s" cx="60" cy="790" r="8"/>
-      <circle class="glare-halo warm" style="--dur:13.7s;--delay:12.8s" cx="211" cy="650" r="8"/>
-      <circle class="glare-halo cold" style="--dur:13.7s;--delay:14.75s" cx="211" cy="730" r="8"/>
+      <circle class="glare-halo warm" style="--dur:13.7s;--delay:12.8s" cx="211" cy="573" r="8"/>
+      <circle class="glare-halo cold" style="--dur:13.7s;--delay:14.75s" cx="211" cy="584" r="8"/>
     </g>
   </svg>
 </div>
@@ -341,6 +344,7 @@
         <a class="act act--primary" href="#companies"><span class="act-k">02</span>Find your company<span class="act-go" aria-hidden="true">↓</span></a>
         <a class="act" href="/r/resume"><span class="act-k">04</span>Resume<span class="act-go" aria-hidden="true">→</span></a>
         <a class="act" href="#contact"><span class="act-k">06</span>Contact<span class="act-go" aria-hidden="true">↓</span></a>
+        <a class="act act--primary" href="/r/research/pac"><span class="act-k">05</span>PAC Research<span class="act-go" aria-hidden="true">→</span></a>
       </nav>
       <p class="hero-context">RoboBoston 2026 · MassRobotics technical career fair · 25 September 2026</p>
     </div>
@@ -469,9 +473,9 @@
     </nav>
     <div class="foot-signal">
       <p class="foot-cap">Signal</p>
-      <p class="fb"><a class="fb-link" href="mailto:io@zneagle.com?subject=ZNEAGLE.COM%20/r%20feedback&amp;body=Page%3A%20/r%0ABuild%3A%20rb-2026-09-22.918abff9%0A%0AWhat%20worked%2C%20what%20broke%2C%20or%20what%20you%20expected%3A%0A" data-feedback>Bug / compliment</a></p>
+      <p class="fb"><a class="fb-link" href="mailto:io@zneagle.com?subject=ZNEAGLE.COM%20/r%20feedback&amp;body=Page%3A%20/r%0ABuild%3A%20rb-2026-09-24.c8e2937f%0A%0AWhat%20worked%2C%20what%20broke%2C%20or%20what%20you%20expected%3A%0A" data-feedback>Bug / compliment</a></p>
       <div class="foot-nav"><a href="https://github.com/zneagle/zneagle-com#development-approach">Source and development approach</a></div>
-      <p class="build" title="Content fingerprint of the published files. It is not a commit hash; include it in bug reports."><span class="build-k">RoboBoston build</span> <span data-build>rb-2026-09-22.918abff9</span></p>
+      <p class="build" title="Content fingerprint of the published files. It is not a commit hash; include it in bug reports."><span class="build-k">RoboBoston build</span> <span data-build>rb-2026-09-24.c8e2937f</span></p>
     </div>
   </div>
   <script type="application/json" id="zn-companies">{"analogic-copley":{"name":"Analogic / Copley Controls","dossier":"real"},"boost-robotics":{"name":"Boost Robotics","dossier":"real"},"boston-engineering":{"name":"Boston Engineering","dossier":"real"},"cerulion":{"name":"Cerulion","dossier":"real"},"chronospace":{"name":"ChronoSpace","dossier":"real"},"festo":{"name":"Festo","dossier":"real"},"field-ai":{"name":"Field AI","dossier":"real"},"fleet-robotics":{"name":"Fleet Robotics","dossier":"real"},"greensight":{"name":"GreenSight","dossier":"real"},"luminous":{"name":"Luminous Robotics","dossier":"real"},"maxon":{"name":"maxon","dossier":"real"},"mitsubishi-electric-automation":{"name":"Mitsubishi Electric Automation","dossier":"real"},"ping":{"name":"P!ng","dossier":"real"},"regent-craft":{"name":"REGENT Craft","dossier":"real"},"sereact":{"name":"Sereact","dossier":"real"},"simpl-automation":{"name":"SIMPL Automation","dossier":"real"},"strive-robotics":{"name":"Strive Robotics","dossier":"real"},"sudo":{"name":"sudo","dossier":"real"},"synthium":{"name":"Synthium","dossier":"real"},"walden-robotics":{"name":"Walden Robotics","dossier":"real"}}</script>

@@ -372,6 +372,27 @@ body:has(.selector-list a:hover) .substrate :is(.z-route,.z-control){opacity:.4}
 .hero-tag{font-family:var(--mono);font-size:.7rem;font-weight:500;letter-spacing:.14em;color:var(--faint-text);white-space:nowrap}
 .hero-statement{margin:0;font-size:1rem;font-weight:inherit;line-height:1;letter-spacing:normal}
 .hero-line{display:block}
+/* Correction 001 (owner): the hero thesis gets the same feathered reading capsule the #thesis lede uses
+   (010F/011C "hero stays free-floating" is superseded for the statement only). Lighter than the section
+   capsule so the schematic stays perceptible: flat forest base where backdrop-filter is missing, a thinner
+   fill plus a 2.5px blur where it exists. No border, radius or shadow; inert and behind the text. The
+   statement shrinks to its text width so the capsule follows the words, not the full hero row.
+   Correction 003: the hero action grid shares the same capsule as one region (not per button); the
+   ::before is out of flow, so the accepted 2x2 geometry and hero height are unchanged. */
+.hero-statement,.hero .actions{position:relative;isolation:isolate;width:fit-content;max-width:100%;
+  --rf:25,36,32;--rf-x:clamp(10px,3vw,48px);--rf-y:clamp(18px,3.4vh,40px);
+  --tb-mx:linear-gradient(to right,transparent 0,rgba(0,0,0,.08) calc(var(--rf-x) * .12),rgba(0,0,0,.35) calc(var(--rf-x) * .3),rgba(0,0,0,.75) calc(var(--rf-x) * .62),#000 var(--rf-x),#000 calc(100% - var(--rf-x)),rgba(0,0,0,.75) calc(100% - var(--rf-x) * .62),rgba(0,0,0,.35) calc(100% - var(--rf-x) * .3),rgba(0,0,0,.08) calc(100% - var(--rf-x) * .12),transparent 100%);
+  --tb-my:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.08) calc(var(--rf-y) * .12),rgba(0,0,0,.35) calc(var(--rf-y) * .3),rgba(0,0,0,.75) calc(var(--rf-y) * .62),#000 var(--rf-y),#000 calc(100% - var(--rf-y)),rgba(0,0,0,.75) calc(100% - var(--rf-y) * .62),rgba(0,0,0,.35) calc(100% - var(--rf-y) * .3),rgba(0,0,0,.08) calc(100% - var(--rf-y) * .12),transparent 100%)}
+.hero-statement::before,.hero .actions::before{content:"";position:absolute;z-index:-1;pointer-events:none;
+  inset:calc(-1 * var(--rf-y)) calc(-1 * var(--rf-x));
+  background:rgba(var(--rf),.5);
+  -webkit-mask-image:var(--tb-mx),var(--tb-my),radial-gradient(ellipse 80% 86% at 50% 50%,#000 64%,transparent 100%);
+  mask-image:var(--tb-mx),var(--tb-my),radial-gradient(ellipse 80% 86% at 50% 50%,#000 64%,transparent 100%);
+  -webkit-mask-composite:source-in,source-in;mask-composite:intersect,intersect}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .hero-statement::before,.hero .actions::before{background:rgba(var(--rf),.3);
+    -webkit-backdrop-filter:blur(2.5px);backdrop-filter:blur(2.5px)}
+}
 .hero-line--lead{max-width:8em;font-size:clamp(2.4rem,5.6vw,5.2rem);font-weight:760;line-height:.94;letter-spacing:-.03em;text-transform:uppercase;color:var(--ink-strong)}
 .hero-line--follow{position:relative;max-width:34ch;margin-top:clamp(20px,2.8vw,38px);padding-left:clamp(26px,4vw,58px);font-size:clamp(1.02rem,1.5vw,1.35rem);font-weight:500;line-height:1.35;text-transform:uppercase;letter-spacing:.01em;color:var(--ink-3)}
 .hero-line--follow::before{content:"";position:absolute;left:0;top:.66em;width:clamp(18px,3vw,44px);height:1px;background:var(--ink);transform-origin:left}
@@ -383,7 +404,19 @@ body:has(.selector-list a:hover) .substrate :is(.z-route,.z-control){opacity:.4}
 .ctx{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 18px;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;color:var(--ink-3)}
 .ctx-k{text-transform:uppercase;letter-spacing:.14em;color:var(--cold)}
 .ctx a{color:var(--ink);text-decoration-color:var(--cold-2)}
-.actions{display:flex;flex-wrap:wrap;gap:10px}
+/* Correction 002 (owner): the four hero actions sit in two rows, 02 | 04 over 06 | 05, so the two filled
+   controls fall on a diagonal. Three auto tracks: 02 spans the first two, 05 the last two, so the outer
+   edges line up while each row keeps its wide button wide. Every button stretches to its span and the
+   arrow sits at the right edge. Below 420px the inner padding tightens (type unchanged) so both rows fit
+   the phone measure; below 360px two per row cannot fit without shrinking type, so they stack. */
+.actions{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:10px}
+.actions .act:nth-child(1){grid-column:1 / span 2}
+.actions .act:nth-child(2){grid-column:3}
+.actions .act:nth-child(3){grid-column:1}
+.actions .act:nth-child(4){grid-column:2 / span 2}
+.actions .act-go{margin-left:auto}
+@media (max-width:419px){.actions .act{padding:0 12px;gap:8px}}
+@media (max-width:359px){.actions{grid-template-columns:minmax(0,max-content)}.actions .act:nth-child(n){grid-column:1}}
 .act{display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:0 18px;border:1px solid var(--rule-3);border-radius:4px;background:rgba(11,15,13,.55);color:var(--ink);font-size:.93rem;font-weight:600;text-decoration:none;transition:border-color var(--t-fast) var(--ease),background-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
 .act-k{font-family:var(--mono);font-size:.7rem;font-weight:500;color:var(--faint-text)}
 .act-go{font-family:var(--mono);color:var(--faint-text);transition:transform var(--t) var(--ease),color var(--t-fast) var(--ease)}
@@ -809,6 +842,22 @@ body:has(.selector-list a:hover) .substrate :is(.z-route,.z-control){opacity:.4}
 .block p{max-width:66ch;color:var(--ink-2)}
 .block>*:last-child{margin-bottom:0}
 .block-note{max-width:62ch;font-size:.93rem;color:var(--ink-3)}
+/* Correction 003: route from the PAC research page to the separately hosted demonstrator, with its
+   qualification directly underneath. Existing primary action style; spacing only. */
+.demo-open{margin-top:var(--space-flow)}
+.demo-open .block-note{margin-top:10px}
+/* PAC embed: the separately deployed demonstrator in a plain bordered viewport, so it reads as a
+   different application from the page around it. Above 600px it is an independently scrollable
+   viewport whose height follows the screen, not PAC's document length; the 300px floor keeps the
+   frame shorter than a landscape phone screen so the page stays scrollable around it. At 600px and
+   below the page shows the launch control instead, and the frame is not displayed. */
+.demo-embed{margin-top:var(--space-flow)}
+.demo-embed .block-note{margin-top:10px}
+.demo-embed .act{margin-top:12px}
+.demo-viewport{margin-top:8px}
+.demo-frame{display:block;width:100%;height:clamp(300px,calc(100svh - 120px),860px);border:1px solid var(--rule-3);border-radius:4px;background:#101814}
+@media (max-width:600px){.demo-embed{display:none}}
+@media (min-width:601px){.demo-open{display:none}}
 .bound{padding:14px 18px;border:1px solid var(--rule-2);border-left:2px solid var(--ink-2)}
 .bound p{margin:0;font-size:.97rem}
 

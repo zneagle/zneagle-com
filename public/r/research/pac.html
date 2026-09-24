@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PAC — Zachary Neagle</title>
-<meta name="description" content="PAC: bounded research on whether a machine has legitimate, current authority for a specific physical action — kept distinct from capability and safety.">
+<meta name="description" content="PAC: bounded research on keeping authority for a physical action distinct from capability and safety, now being developed toward an experimental instrument for studying machine error at explicit human-authority boundaries.">
 <link rel="canonical" href="https://zneagle.com/r/research/pac">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://zneagle.com/r/research/pac">
 <meta property="og:site_name" content="zneagle.com">
 <meta property="og:title" content="PAC — Zachary Neagle">
-<meta property="og:description" content="PAC: bounded research on whether a machine has legitimate, current authority for a specific physical action — kept distinct from capability and safety.">
+<meta property="og:description" content="PAC: bounded research on keeping authority for a physical action distinct from capability and safety, now being developed toward an experimental instrument for studying machine error at explicit human-authority boundaries.">
 <meta name="twitter:card" content="summary">
 <!-- shell:head -->
 <meta name="theme-color" content="#0b0f0d">
@@ -151,20 +151,45 @@
           <div><dt>Route</dt><dd>/r/research/pac</dd></div>
           <div><dt>Evidence</dt><dd>Research</dd></div>
           <div><dt>Role</dt><dd>Supporting</dd></div>
-          <div><dt>Revision</dt><dd>2026-09-21</dd></div>
+          <div><dt>Revision</dt><dd>2026-09-24</dd></div>
         </dl>
 <!-- shell:share -->
 <p class="share"><span class="share-k">Link</span><span class="share-url">zneagle.com/r/research/pac</span><button class="share-copy" type="button" data-copy hidden>Copy link</button><span class="share-status" role="status" aria-live="polite"></span></p>
 <!-- /shell:share -->
       </header>
+      <section class="block" aria-labelledby="looking-at" data-content="real">
+        <h2 id="looking-at"><span class="h-idx" aria-hidden="true">01</span>What you’re looking at</h2>
+        <p>PAC is currently in its smallest possible form: a deliberately bounded experimental machine built to make a few distinctions observable and testable.</p>
+        <p>The live demonstrator uses five deterministic scenarios to separate authority, safety, execution, evidence uncertainty, and consumed-authorization refusal. The robot work cell and upstream proposal are simulated. No external AI model is connected, and this is not a production safety system.</p>
+        <div class="demo-open">
+          <a class="act act--primary" href="https://outstanding-reverence-production-3b55.up.railway.app/" rel="noopener">Open PAC demo<span class="act-go" aria-hidden="true">↗</span></a>
+          <p class="block-note">Opens the existing D01–D05 demonstrator, hosted separately. The robot, valve and actuation are simulated; no physical robot is connected. Safety is a distinct simulated gate, not a certified or independently deployed safety subsystem. When the demonstrator cannot reach its PAC service it shows labeled recorded-trace replay, which is not live execution.</p>
+        </div>
+        <div class="demo-embed">
+          <p class="block-note"><strong>Live experiment</strong></p>
+          <div class="demo-viewport"><iframe class="demo-frame" src="https://outstanding-reverence-production-3b55.up.railway.app/" title="PAC demonstrator — separately deployed live experiment" loading="lazy" referrerpolicy="no-referrer"></iframe></div>
+          <a class="act act--primary" href="https://outstanding-reverence-production-3b55.up.railway.app/" rel="noopener">Open PAC demo<span class="act-go" aria-hidden="true">↗</span></a>
+          <p class="block-note">The experiment above is the separately deployed PAC demonstrator. Embedding it here does not change its execution path or experimental semantics. The robot, valve and actuation are simulated; no physical robot is connected. Safety is a distinct simulated gate, not a certified or independently deployed safety subsystem. When the demonstrator cannot reach its PAC service it shows labeled recorded-trace replay, which is not live execution.</p>
+        </div>
+        <ul class="ledger" aria-label="Now and next">
+          <li><span class="ledger-k">Now</span><span class="ledger-v">PAC today → 5 bounded cases → simulated work → evidence</span></li>
+          <li><span class="ledger-k">Next — proposal</span><span class="ledger-v">researcher → model / agent → explicit human constraints → PAC → controlled action → evidence → reproducible error corpus</span><span class="state" data-state="open">Proposal</span></li>
+        </ul>
+        <p class="block-note"><strong>Where I intend to take it — proposal, not available.</strong> The apparatus described here does not exist yet.</p>
+        <p>The next research direction is to expand this small apparatus into a researcher-facing experimental machine. A researcher could connect a model or agent, define a task and explicit human constraints, and observe what happens as proposed actions pass through the same authority boundary into a controlled action environment.</p>
+        <p>The machine would preserve the path from:</p>
+        <p class="block-note">human intention → machine interpretation → proposed action → authority → attempted action → resulting state → evidence</p>
+        <p>The purpose is not to prove that AI misbehaves. It is to build an apparatus capable of distinguishing machine error, human specification error, authority error, execution error, evidence failure, and cases where the available evidence is insufficient to determine what happened.</p>
+      </section>
       <section class="block" aria-labelledby="role" data-content="real">
-        <h2 id="role"><span class="h-idx" aria-hidden="true">01</span>What PAC explores</h2>
-        <p>PAC explores whether a machine has legitimate, current authority for a specific physical action, separately from whether it can perform that action and whether the action is independently safe. The project is a research demonstrator, not a production safety system or deployed industrial control architecture. The practical question is narrow: before a machine causes a consequential physical state change, can authority for that exact action be represented, evaluated, consumed, refused, and evidenced as a distinct systems boundary?</p>
+        <h2 id="role"><span class="h-idx" aria-hidden="true">02</span>What PAC explores</h2>
+        <p>PAC began as an experiment in separating one question from two others: whether a machine has legitimate, current authority for a specific physical action, as distinct from whether it can perform that action and whether the action is independently safe. It is a research demonstrator, not a production safety system, a proposed industry standard, or a deployed industrial control architecture.</p>
+        <p>That boundary remains useful. The current research direction is increasingly focused on what the boundary can make observable. When human authority and intention are represented explicitly enough to test, machine behavior can be measured against them, and the boundary becomes an experimental reference surface. The question is no longer only “can PAC authorize this correctly?” but also “what kinds of machine error become visible when authority and intention are explicit enough to check?”</p>
         <p>The replay implementation, tests, and documentation in this release were developed with AI assistance under my direction and review. The source and checks make that work available for inspection within the demonstrator's stated limits. I present it for review of:</p>
         <ul class="seq" aria-label="Supports"><li>Systems reasoning</li><li>Separating authority from safety</li><li>Falsifiability</li><li>Adversarial review</li><li>Narrowing claims under evidence</li><li>Technical research discipline</li></ul>
       </section>
       <section class="block" aria-labelledby="separation" data-content="real">
-        <h2 id="separation"><span class="h-idx" aria-hidden="true">02</span>Three separate questions</h2>
+        <h2 id="separation"><span class="h-idx" aria-hidden="true">03</span>Three separate questions</h2>
         <ol class="triad">
           <li data-concern="capability"><span class="triad-k">Capability</span><span class="triad-t">Can it?</span><span class="triad-d">Can the system understand the situation and perform the action?</span></li>
           <li data-concern="authority"><span class="triad-k">Authority</span><span class="triad-t">May it, now?</span><span class="triad-d">Does legitimate, current authority presently exist for this specific action? This is PAC’s question.</span></li>
@@ -172,7 +197,7 @@
         </ol>
       </section>
       <section class="block" aria-labelledby="demonstrator" data-content="real">
-        <h2 id="demonstrator"><span class="h-idx" aria-hidden="true">03</span>RoboBoston demonstrator</h2>
+        <h2 id="demonstrator"><span class="h-idx" aria-hidden="true">04</span>RoboBoston demonstrator</h2>
         <p>The event demonstration uses a simulated test-cell valve scenario. No physical actuator is connected. Five public scenarios have been exercised on the deployed demonstrator, deliberately kept distinct rather than collapsed into a generic "blocked" state:</p>
         <ul class="ledger">
           <li><span class="ledger-k">D01 — Authorized action</span><span class="ledger-v">PAC returns PERMIT, independent safety returns ALLOW, and the simulated action reaches EXECUTED.</span></li>
@@ -181,9 +206,10 @@
           <li><span class="ledger-k">D04 — Independent safety veto</span><span class="ledger-v">PAC returns PERMIT, but independent safety returns DENY. Execution is refused as NO_EXECUTION:SAFETY_DENY, no execution occurs, and the authorization remains unconsumed. In this demo the safety input is simulated. PAC treats safety as a distinct gate; this does not demonstrate a separate certified or independently deployed safety subsystem.</span></li>
           <li><span class="ledger-k">D05 — Unknown mandatory evidence</span><span class="ledger-v">Mandatory asset identity is UNKNOWN. PAC returns DEFER, no authorization is issued, and no execution occurs. <a class="src-ref" href="#src-oasis-xacml-3" data-src="oasis-xacml-3">[OASIS]</a></span></li>
         </ul>
+        <p>D01–D05 is the first bounded experimental apparatus: a small, simulated environment in which permit, authority denial, consumed-authority refusal, safety denial, and epistemic defer — refusing to decide because required evidence is unknown — stay distinguishable. Those explicit states are what later model-error experiments would be measured against. The apparatus does not establish that PAC is novel or necessary, that it should become a standard, or that it is safe for production use.</p>
       </section>
       <section class="block" aria-labelledby="state" data-content="real">
-        <h2 id="state"><span class="h-idx" aria-hidden="true">04</span>Verified demonstrator state</h2>
+        <h2 id="state"><span class="h-idx" aria-hidden="true">05</span>Verified demonstrator state</h2>
         <ul class="ledger">
           <li><span class="ledger-k">Regression</span><span class="ledger-v">PAC corrected core regression: 53/53 PASS.</span><span class="state" data-state="tested">Tested</span></li>
           <li><span class="ledger-k">Non-weakening</span><span class="ledger-v">Non-weakening verification: 10/10 PASS.</span><span class="state" data-state="tested">Tested</span></li>
@@ -195,23 +221,104 @@
           <li><span class="ledger-k">Offline presentation</span><span class="ledger-v">An actual iPhone was used against the deployed service. In Airplane Mode, D01–D05 remained available as explicitly labeled OFFLINE — VERIFIED TRACE REPLAY. That establishes a usable offline presentation path for the recorded cases; it is not live offline PAC execution.</span></li>
         </ul>
       </section>
+      <section class="block" aria-labelledby="error" data-content="real">
+        <h2 id="error"><span class="h-idx" aria-hidden="true">06</span>From authority to error</h2>
+        <p>The research target is the gap between what a person intended and what a machine-mediated system actually did. The intent is to give each step a place where it can be recorded and compared:</p>
+        <p class="block-note">human intention → machine interpretation → proposed action → permitted authority → attempted action → resulting state → recorded evidence</p>
+        <p>Cases of interest are described as observed system behavior, not intent. They include outputs or actions that:</p>
+        <ul class="ledger">
+          <li><span class="ledger-v">preserve the imposed authority correctly — the compliant baseline;</span></li>
+          <li><span class="ledger-v">conflict with it, or route around it;</span></li>
+          <li><span class="ledger-v">exploit ambiguity in how it is represented;</span></li>
+          <li><span class="ledger-v">expand or narrow the apparent instruction;</span></li>
+          <li><span class="ledger-v">replay or reuse something that should no longer authorize action;</span></li>
+          <li><span class="ledger-v">reach an apparently successful result by an unintended path;</span></li>
+          <li><span class="ledger-v">report completion that the available evidence does not support;</span></li>
+          <li><span class="ledger-v">or reveal an error class that was not anticipated.</span></li>
+        </ul>
+        <p>“Authority violation” here means an observed discrepancy against an explicit experimental definition. It says nothing about what a model wanted, chose, or understood.</p>
+        <p>Adversarial review has raised the possibility that substantial parts of the current D01–D05 behavior may be reproducible using conventional authorization, capability, workflow, audit, and safety mechanisms. That redundancy question remains unresolved.</p>
+      </section>
+      <section class="block" aria-labelledby="classes" data-content="real">
+        <h2 id="classes"><span class="h-idx" aria-hidden="true">07</span>Where a discrepancy comes from</h2>
+        <p>An unexpected result is not automatically model misbehavior. A discrepancy would be classified before it is attributed:</p>
+        <ul class="ledger">
+          <li><span class="ledger-k">Human specification</span><span class="ledger-v">The human constraint failed to represent what the human actually intended.</span></li>
+          <li><span class="ledger-k">Translation</span><span class="ledger-v">Intent changed when represented in prompts, structured state, plans, or commands.</span></li>
+          <li><span class="ledger-k">Model output</span><span class="ledger-v">The generated proposal or output conflicts with the represented constraint.</span></li>
+          <li><span class="ledger-k">Authority</span><span class="ledger-v">The authority machinery issued, denied, consumed, retained, or interpreted authority incorrectly.</span></li>
+          <li><span class="ledger-k">Execution</span><span class="ledger-v">The commanded operation and the actual operation diverged.</span></li>
+          <li><span class="ledger-k">Evidence</span><span class="ledger-v">The recorded account of what happened is incomplete, misleading, stale, or wrong.</span></li>
+          <li><span class="ledger-k">Uncertain completion</span><span class="ledger-v">The system cannot establish whether the consequential physical action actually completed.</span></li>
+          <li><span class="ledger-k">Unknown</span><span class="ledger-v">The evidence does not justify assigning the discrepancy to any one class.</span></li>
+        </ul>
+        <p>Classification is meant to be part of the experiment: a result that looks like model error may turn out to be an error in the human specification, or in PAC itself.</p>
+      </section>
+      <section class="block" aria-labelledby="why-errors" data-content="real">
+        <h2 id="why-errors"><span class="h-idx" aria-hidden="true">08</span>Why study errors?</h2>
+        <p>Unexpected model behavior already appears across current AI evaluation research, under different names and experimental definitions. The examples below motivate preserving such behavior carefully. None of their authors endorse PAC, PAC did not discover these phenomena, and PAC’s discrepancy classes are not their definitions.</p>
+        <ul class="ledger">
+          <li><span class="ledger-k">Controlled evaluations</span><span class="ledger-v">OpenAI, with Apollo Research (17 Sep 2025), reported behaviors consistent with scheming in controlled tests of several frontier models, and a training method that reduced but did not eliminate them. OpenAI states it has no evidence that today’s deployed frontier models could suddenly begin significantly harmful scheming. <a class="src-ref" href="#src-openai-apollo-scheming" data-src="openai-apollo-scheming">[OpenAI/Apollo]</a></span></li>
+          <li><span class="ledger-k">Stress tests</span><span class="ledger-v">Anthropic (20 Jun 2025) stress-tested 16 models in constructed scenarios involving goal conflicts or threatened replacement; some models took harmful actions such as blackmail. Anthropic describes these as controlled simulations and states it has not seen evidence of agentic misalignment in real deployments. <a class="src-ref" href="#src-anthropic-agentic-misalignment" data-src="anthropic-agentic-misalignment">[Anthropic]</a></span></li>
+          <li><span class="ledger-k">Specification gaming</span><span class="ledger-v">Bondarenko et al. (preprint, Feb 2025, revised Aug 2025) asked LLM agents to win against a chess engine; some reasoning models often “hack the benchmark” instead of playing, satisfying the stated goal by an unintended path. <a class="src-ref" href="#src-arxiv-spec-gaming-chess" data-src="arxiv-spec-gaming-chess">[arXiv]</a></span></li>
+          <li><span class="ledger-k">Disclosure practice</span><span class="ledger-v">OpenAI (16 Sep 2026) published a framework for tracking, investigating and disclosing model misalignment across training, evaluation, testing and deployment, noting that individual reports do not indicate how often such behavior occurs. <a class="src-ref" href="#src-openai-misalignment-reporting" data-src="openai-misalignment-reporting">[OpenAI]</a></span></li>
+        </ul>
+        <p>Together they suggest that preserving comparable, well-evidenced examples of machine-behavior failure is itself an open research problem. PAC’s proposed corpus is one attempt to work on that problem; it does not claim to solve it.</p>
+      </section>
+      <section class="block" aria-labelledby="proposal" data-content="real">
+        <h2 id="proposal"><span class="h-idx" aria-hidden="true">09</span>Proposed next research direction</h2>
+        <p class="block-note"><strong>Proposal — not available.</strong> The research service described here does not exist yet in this multi-user, API-routed form.</p>
+        <p>The intended next step is a researcher-accessible experimental service. A researcher would connect an AI model or agent through an API and route it through the same bounded apparatus used for other models:</p>
+        <p class="block-note">researcher → model / agent API → task + explicit human constraints → PAC experimental authority boundary → controlled action environment → observation → artifact / error record</p>
+        <p>It is not intended as a model leaderboard. The aim is reproducible examples of discrepancy between explicit human intention or authority and machine behavior.</p>
+        <p>Variables a researcher should eventually be able to change:</p>
+        <ul class="seq" aria-label="Experimental variables"><li>Models</li><li>Model providers</li><li>Prompts</li><li>Agents</li><li>Planning architectures</li><li>Tool configurations</li><li>Tasks</li><li>Authority structures</li><li>Retries</li><li>Evidence conditions</li></ul>
+      </section>
+      <section class="block" aria-labelledby="corpus" data-content="real">
+        <h2 id="corpus"><span class="h-idx" aria-hidden="true">10</span>The intended corpus</h2>
+        <p>The intended output is a structured corpus of machine-error artifacts. Each useful case would keep enough evidence to reconstruct:</p>
+        <ol class="ledger">
+          <li><span class="ledger-v">the human instruction or intention;</span></li>
+          <li><span class="ledger-v">the explicit authority and constraints;</span></li>
+          <li><span class="ledger-v">the relevant machine input and context;</span></li>
+          <li><span class="ledger-v">the model output or proposed action;</span></li>
+          <li><span class="ledger-v">the authority evaluation;</span></li>
+          <li><span class="ledger-v">the safety state, where applicable;</span></li>
+          <li><span class="ledger-v">the attempted or executed action;</span></li>
+          <li><span class="ledger-v">the resulting state;</span></li>
+          <li><span class="ledger-v">the discrepancy classification;</span></li>
+          <li><span class="ledger-v">reproducibility information.</span></li>
+        </ol>
+        <p>Positive and negative cases both belong in it: compliant runs, failures, false positives, rejected incidents, ambiguous cases, and cases that could not be reproduced. Without denominators and negative cases it would be a collection of anecdotes, not empirical research.</p>
+        <p>Questions it is meant to help ask — not questions PAC already answers:</p>
+        <ul class="ledger">
+          <li><span class="ledger-v">Which errors recur across models, and which are model-specific?</span></li>
+          <li><span class="ledger-v">Which arise from ambiguous human specification, or from translation between natural language and machine state?</span></li>
+          <li><span class="ledger-v">Which resemble specification gaming, and which involve misleading completion or evidence?</span></li>
+          <li><span class="ledger-v">Which involve the authority lifecycle or replay?</span></li>
+          <li><span class="ledger-v">Which disappear when constraints are represented differently, and which mitigations actually reduce recurrence?</span></li>
+          <li><span class="ledger-v">Which “failures” turn out to be mistakes in our own specification?</span></li>
+        </ul>
+        <p>If enough comparable examples accumulate, the value would be understanding recurring failure modes well enough to design better experiments, interfaces, constraints, evaluations, and mitigations.</p>
+      </section>
       <section class="block" aria-labelledby="not" data-content="real">
-        <h2 id="not"><span class="h-idx" aria-hidden="true">05</span>What is not proven</h2>
+        <h2 id="not"><span class="h-idx" aria-hidden="true">11</span>What is not proven</h2>
         <p>PAC is intentionally incomplete. Open or unvalidated areas include:</p>
         <ul class="ledger">
           <li><span class="ledger-k">A01</span><span class="ledger-v">Authority-independence semantics.</span><span class="state" data-state="open">Open question</span></li>
           <li><span class="ledger-k">A02</span><span class="ledger-v">Equivalent-authority reissuance / duplicate issuance / double-spend semantics.</span><span class="state" data-state="open">Open question</span></li>
           <li><span class="ledger-k">A03</span><span class="ledger-v">K_OF_N.k semantics.</span><span class="state" data-state="open">Open question</span></li>
+          <li><span class="ledger-k">Error study</span><span class="ledger-v">No external AI model has been connected to PAC; the demonstrator's upstream proposal is scripted. The research service and corpus in sections 09–10 are proposals, and no model-error corpus has been collected.</span><span class="state" data-state="open">Open question</span></li>
           <li><span class="ledger-k">Distributed / physical</span><span class="ledger-v">Persistence and restart behavior; concurrency and split brain; revocation races; stale evidence <a class="src-ref" href="#src-w3c-prov" data-src="w3c-prov">[W3C]</a>; delegation authenticity; RPC identity; uncertainty about whether a physical action actually completed; distributed correctness; production reliability and availability.</span><span class="state" data-state="open">Open question</span></li>
         </ul>
         <p>No physical robot or actuator has been controlled by the RoboBoston demonstrator. The project does not claim certification, production safety, distributed correctness, or proven novelty.</p>
       </section>
       <section class="block" aria-labelledby="prior-art" data-content="real">
-        <h2 id="prior-art"><span class="h-idx" aria-hidden="true">06</span>Prior art / redundancy pressure</h2>
+        <h2 id="prior-art"><span class="h-idx" aria-hidden="true">12</span>Prior art / redundancy pressure</h2>
         <p>PAC overlaps conceptually with established areas including IAM / RBAC / ABAC <a class="src-ref" href="#src-nist-abac" data-src="nist-abac">[NIST]</a>, capability-based security, Zero Trust-style per-resource authorization <a class="src-ref" href="#src-nist-zero-trust" data-src="nist-zero-trust">[NIST]</a>, usage control, workflow and permit-to-work systems <a class="src-ref" href="#src-hse-permit-to-work" data-src="hse-permit-to-work">[HSE]</a>, functional safety, industrial-control access authorization <a class="src-ref" href="#src-opc-ua-part3" data-src="opc-ua-part3">[OPC UA]</a>, robotics middleware authorization <a class="src-ref" href="#src-ros2-access-control" data-src="ros2-access-control">[ROS 2]</a>, and OT security. That overlap is a research constraint, not something to hide. The strongest question is whether "current, action-specific physical authority" deserves to remain an explicit decision boundary or whether the same semantics should live entirely inside existing authorization, workflow, safety, or orchestration systems.</p>
       </section>
       <section class="block" aria-labelledby="falsify" data-content="real">
-        <h2 id="falsify"><span class="h-idx" aria-hidden="true">07</span>What would falsify the useful-core claim</h2>
+        <h2 id="falsify"><span class="h-idx" aria-hidden="true">13</span>What would falsify the useful-core claim</h2>
         <p>Useful expert challenges include:</p>
         <ol class="ledger">
           <li><span class="ledger-v">Show an existing robotics or industrial-control architecture that already provides the same machine/action/target/current-evidence authority boundary without collapsing it into capability or safety.</span></li>
@@ -220,16 +327,23 @@
         </ol>
         <p>PAC is intended to survive those questions or become narrower because of them.</p>
       </section>
+      <section class="block" aria-labelledby="business" data-content="real">
+        <h2 id="business"><span class="h-idx" aria-hidden="true">14</span>And the business model?</h2>
+        <p>Currently: keep the machine alive.</p>
+        <p>I don’t have much interest in restricting access to observations about AI error simply to create something to sell. If PAC can expand the surface area of what we can empirically understand about failures between human intention, machine behavior, authority, action, and evidence, my preference is to make that research broadly useful.</p>
+        <p>The practical requirement is less glamorous: sustenance funding and infrastructure. Enough support for the experimental machine to operate reliably, grow, preserve its evidence, and increasingly run without requiring my constant attention — so I can keep working on the next problem.</p>
+        <p>If someone eventually discovers an excellent business model for “please fund the weird machine so the weird machine can keep finding interesting errors,” I am receptive.</p>
+      </section>
       <section class="block" aria-labelledby="disclosure" data-content="real">
-        <h2 id="disclosure"><span class="h-idx" aria-hidden="true">08</span>Disclosure</h2>
-        <p class="block-note"><strong>Experimental research demonstrator.</strong> PAC is not presented as a production safety system, certified control standard, deployed autonomous authority mechanism, or proof of novelty.</p>
+        <h2 id="disclosure"><span class="h-idx" aria-hidden="true">15</span>Disclosure</h2>
+        <p class="block-note"><strong>Experimental research demonstrator.</strong> PAC is not presented as a production safety system, certified control standard, proposed industry standard, deployed autonomous authority mechanism, or proof of novelty. The research service and corpus described above are proposals and do not yet exist.</p>
       </section>
       <section class="block" aria-labelledby="sources">
-        <h2 id="sources"><span class="h-idx" aria-hidden="true">09</span>Sources</h2>
+        <h2 id="sources"><span class="h-idx" aria-hidden="true">16</span>Sources</h2>
         <p class="block-note">Cited inline above as [Label] — what PAC overlaps, what it may distinguish, and what remains unknown. None of these establish that PAC is novel; several (XACML, PROV) are prior art PAC has not yet matched.</p>
 <!-- shell:sources -->
 <details class="trace src-drawer" open>
-  <summary>Sources (7 sources)</summary>
+  <summary>Sources (11 sources)</summary>
   <div class="trace-body src-list">
   <article class="src-card" id="src-oasis-xacml-3">
     <p class="src-title"><span class="state">STANDARD</span> eXtensible Access Control Markup Language (XACML) Version 3.0 <span class="src-year">(2013)</span></p>
@@ -237,6 +351,34 @@
     <p class="src-why"><span class="src-tag">Why it matters</span> XACML distinguishes NotApplicable (no policy applies) from Indeterminate (evaluation failed or conflicted) as separate decision outcomes. PAC&#x27;s D05 independently returns DEFER for unknown mandatory evidence; the two are not claimed to be equivalent, and this source is not evidence that PAC does or does not match that distinction — that question can only be answered from PAC&#x27;s own artifacts. XACML is offered here as relevant prior art for thinking about differentiated authorization outcomes.</p>
     <p class="src-supports"><span class="src-tag">Supports</span> XACML&#x27;s differentiated policy-decision outcomes, as prior art for authorization-outcome semantics — not a claim about PAC&#x27;s own implementation.</p>
     <p class="src-open"><a href="https://docs.oasis-open.org/xacml/3.0/xacml-3.0-core-spec-os-en.html" rel="noopener">Open source ↗</a></p>
+  </article>
+  <article class="src-card" id="src-openai-apollo-scheming">
+    <p class="src-title"><span class="state">RESEARCH POST</span> Detecting and reducing scheming in AI models <span class="src-year">(2025)</span></p>
+    <p class="src-org">OpenAI, with Apollo Research</p>
+    <p class="src-why"><span class="src-tag">Why it matters</span> Published 17 September 2025. The findings come from controlled test environments; OpenAI states it has no evidence that today&#x27;s deployed frontier models could suddenly begin significantly harmful scheming, and notes that the most common deployed failures are simpler, such as pretending to have completed a task. Cited as motivation for studying and preserving machine-behavior errors. It does not endorse or evaluate PAC, and PAC&#x27;s discrepancy classes are not its definitions.</p>
+    <p class="src-supports"><span class="src-tag">Supports</span> Controlled evaluations found behaviors consistent with scheming (covert actions used as a proxy) in several frontier models; an anti-scheming training method reduced but did not eliminate them.</p>
+    <p class="src-open"><a href="https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/" rel="noopener">Open source ↗</a></p>
+  </article>
+  <article class="src-card" id="src-anthropic-agentic-misalignment">
+    <p class="src-title"><span class="state">RESEARCH POST</span> Agentic Misalignment: How LLMs could be insider threats <span class="src-year">(2025)</span></p>
+    <p class="src-org">Anthropic</p>
+    <p class="src-why"><span class="src-tag">Why it matters</span> Published 20 June 2025. Anthropic describes these as controlled simulations and states that it has not seen evidence of agentic misalignment in real deployments. Cited as an example of deliberately constructed conditions being used to surface failure behavior. It does not endorse or evaluate PAC, and PAC&#x27;s discrepancy classes are not its definitions.</p>
+    <p class="src-supports"><span class="src-tag">Supports</span> Stress tests of 16 models in constructed scenarios involving goal conflicts or threatened replacement, in which some models took harmful actions such as blackmail.</p>
+    <p class="src-open"><a href="https://www.anthropic.com/research/agentic-misalignment" rel="noopener">Open source ↗</a></p>
+  </article>
+  <article class="src-card" id="src-arxiv-spec-gaming-chess">
+    <p class="src-title"><span class="state">PREPRINT</span> Demonstrating specification gaming in reasoning models <span class="src-year">(2025)</span></p>
+    <p class="src-org">A. Bondarenko, D. Volk, D. Volkov, J. Ladish</p>
+    <p class="src-why"><span class="src-tag">Why it matters</span> First submitted 18 February 2025, revised 27 August 2025; a preprint, not peer-reviewed at the time of citation. Cited as an example of the specification-gaming research family, where a task specification is satisfied in a way that diverges from the intended outcome. It does not endorse or evaluate PAC.</p>
+    <p class="src-supports"><span class="src-tag">Supports</span> LLM agents instructed to win against a chess engine; some reasoning models &quot;will often hack the benchmark by default&quot; instead of playing — satisfying the stated goal by an unintended path.</p>
+    <p class="src-open"><a href="https://arxiv.org/abs/2502.13295" rel="noopener">Open source ↗</a></p>
+  </article>
+  <article class="src-card" id="src-openai-misalignment-reporting">
+    <p class="src-title"><span class="state">FRAMEWORK</span> Our framework for reporting model misalignment <span class="src-year">(2026)</span></p>
+    <p class="src-org">OpenAI</p>
+    <p class="src-why"><span class="src-tag">Why it matters</span> Published 16 September 2026. OpenAI notes there is no industry-wide framework for disclosing misalignment examples, that it favors disclosure even when significance is uncertain, and that individual reports do not indicate how often such behavior occurs. Cited to show that systematically preserving and disclosing unexpected model behavior is itself a current research problem. It does not endorse or evaluate PAC.</p>
+    <p class="src-supports"><span class="src-tag">Supports</span> A framework for tracking, investigating and disclosing instances of model misalignment across training, evaluation, testing and deployment, published with six initial reports.</p>
+    <p class="src-open"><a href="https://openai.com/index/model-misalignment-reporting-framework/" rel="noopener">Open source ↗</a></p>
   </article>
   <article class="src-card" id="src-w3c-prov">
     <p class="src-title"><span class="state">W3C WORKING GROUP NOTE</span> PROV-Overview: An Overview of the PROV Family of Documents <span class="src-year">(2013 (W3C Working Group Note))</span></p>
@@ -291,15 +433,22 @@
 <aside class="toc" aria-labelledby="toc-cap">
   <p class="toc-cap" id="toc-cap">On this page</p>
   <ol>
-    <li><a href="#role"><span class="toc-k">01</span>What PAC explores</a></li>
-    <li><a href="#separation"><span class="toc-k">02</span>Three separate questions</a></li>
-    <li><a href="#demonstrator"><span class="toc-k">03</span>RoboBoston demonstrator</a></li>
-    <li><a href="#state"><span class="toc-k">04</span>Verified demonstrator state</a></li>
-    <li><a href="#not"><span class="toc-k">05</span>What is not proven</a></li>
-    <li><a href="#prior-art"><span class="toc-k">06</span>Prior art / redundancy pressure</a></li>
-    <li><a href="#falsify"><span class="toc-k">07</span>What would falsify the useful-core claim</a></li>
-    <li><a href="#disclosure"><span class="toc-k">08</span>Disclosure</a></li>
-    <li><a href="#sources"><span class="toc-k">09</span>Sources</a></li>
+    <li><a href="#looking-at"><span class="toc-k">01</span>What you’re looking at</a></li>
+    <li><a href="#role"><span class="toc-k">02</span>What PAC explores</a></li>
+    <li><a href="#separation"><span class="toc-k">03</span>Three separate questions</a></li>
+    <li><a href="#demonstrator"><span class="toc-k">04</span>RoboBoston demonstrator</a></li>
+    <li><a href="#state"><span class="toc-k">05</span>Verified demonstrator state</a></li>
+    <li><a href="#error"><span class="toc-k">06</span>From authority to error</a></li>
+    <li><a href="#classes"><span class="toc-k">07</span>Where a discrepancy comes from</a></li>
+    <li><a href="#why-errors"><span class="toc-k">08</span>Why study errors?</a></li>
+    <li><a href="#proposal"><span class="toc-k">09</span>Proposed next research direction</a></li>
+    <li><a href="#corpus"><span class="toc-k">10</span>The intended corpus</a></li>
+    <li><a href="#not"><span class="toc-k">11</span>What is not proven</a></li>
+    <li><a href="#prior-art"><span class="toc-k">12</span>Prior art / redundancy pressure</a></li>
+    <li><a href="#falsify"><span class="toc-k">13</span>What would falsify the useful-core claim</a></li>
+    <li><a href="#business"><span class="toc-k">14</span>And the business model?</a></li>
+    <li><a href="#disclosure"><span class="toc-k">15</span>Disclosure</a></li>
+    <li><a href="#sources"><span class="toc-k">16</span>Sources</a></li>
   </ol>
 </aside>
 <!-- /shell:toc -->
@@ -326,9 +475,9 @@
     </nav>
     <div class="foot-signal">
       <p class="foot-cap">Signal</p>
-      <p class="fb"><a class="fb-link" href="mailto:io@zneagle.com?subject=ZNEAGLE.COM%20/r%20feedback&amp;body=Page%3A%20/r/research/pac%0ABuild%3A%20rb-2026-09-22.918abff9%0A%0AWhat%20worked%2C%20what%20broke%2C%20or%20what%20you%20expected%3A%0A" data-feedback>Bug / compliment</a></p>
+      <p class="fb"><a class="fb-link" href="mailto:io@zneagle.com?subject=ZNEAGLE.COM%20/r%20feedback&amp;body=Page%3A%20/r/research/pac%0ABuild%3A%20rb-2026-09-24.c8e2937f%0A%0AWhat%20worked%2C%20what%20broke%2C%20or%20what%20you%20expected%3A%0A" data-feedback>Bug / compliment</a></p>
       <div class="foot-nav"><a href="https://github.com/zneagle/zneagle-com#development-approach">Source and development approach</a></div>
-      <p class="build" title="Content fingerprint of the published files. It is not a commit hash; include it in bug reports."><span class="build-k">RoboBoston build</span> <span data-build>rb-2026-09-22.918abff9</span></p>
+      <p class="build" title="Content fingerprint of the published files. It is not a commit hash; include it in bug reports."><span class="build-k">RoboBoston build</span> <span data-build>rb-2026-09-24.c8e2937f</span></p>
     </div>
   </div>
   <script type="application/json" id="zn-companies">{"analogic-copley":{"name":"Analogic / Copley Controls","dossier":"real"},"boost-robotics":{"name":"Boost Robotics","dossier":"real"},"boston-engineering":{"name":"Boston Engineering","dossier":"real"},"cerulion":{"name":"Cerulion","dossier":"real"},"chronospace":{"name":"ChronoSpace","dossier":"real"},"festo":{"name":"Festo","dossier":"real"},"field-ai":{"name":"Field AI","dossier":"real"},"fleet-robotics":{"name":"Fleet Robotics","dossier":"real"},"greensight":{"name":"GreenSight","dossier":"real"},"luminous":{"name":"Luminous Robotics","dossier":"real"},"maxon":{"name":"maxon","dossier":"real"},"mitsubishi-electric-automation":{"name":"Mitsubishi Electric Automation","dossier":"real"},"ping":{"name":"P!ng","dossier":"real"},"regent-craft":{"name":"REGENT Craft","dossier":"real"},"sereact":{"name":"Sereact","dossier":"real"},"simpl-automation":{"name":"SIMPL Automation","dossier":"real"},"strive-robotics":{"name":"Strive Robotics","dossier":"real"},"sudo":{"name":"sudo","dossier":"real"},"synthium":{"name":"Synthium","dossier":"real"},"walden-robotics":{"name":"Walden Robotics","dossier":"real"}}</script>
